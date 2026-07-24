@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TD Bank — Customer Contact Update App — Chris Rodriguez</title>
+<meta name="description" content="TD's first contact-update experience built around the customer instead of the product — live across 1,000+ U.S. branches and the contact-center network.">
+<meta property="og:title" content="TD Bank — Customer Contact Update App">
+<meta property="og:description" content="One agent. One interface. No phone calls.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body class="cs-page">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <div class="wrap">
+    <a class="nav-logo" href="/">chris rodriguez</a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/" class="is-active">work</a>
+      <a href="/about/">about</a>
+      <a href="/contact/">contact</a>
+      <div class="nav-utility-mobile">
+        <a href="https://www.linkedin.com/in/uxdesignerchris/" target="_blank" rel="noopener">linkedin ↗</a>
+        <a href="../../assets/documents/Christopher-Rodriguez-Resume-2026.pdf" target="_blank" rel="noopener">résumé ↓</a>
+      </div>
+    </nav>
+    <div class="nav-utility">
+      <a href="https://www.linkedin.com/in/uxdesignerchris/" target="_blank" rel="noopener">linkedin ↗</a>
+      <a href="../../assets/documents/Christopher-Rodriguez-Resume-2026.pdf" target="_blank" rel="noopener">résumé ↓</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="cs-wrap cs-title-block">
+    <h1 class="cs-h1">TD Bank</h1>
+    <div class="cs-subhead-row">
+      <p class="cs-subtitle">Customer contact<br>update app</p>
+      <div class="cs-lead-col">
+        <p class="cs-lead">TD's first contact-update experience built around the customer instead of the product — live across 1,000+ U.S. branches and the contact-center network.</p>
+        <dl class="cs-meta-row">
+          <div class="cs-meta-item"><dt>role</dt><dd>UX-UI Designer</dd></div>
+          <div class="cs-meta-item"><dt>users</dt><dd>TD Bank U.S. frontline agents</dd></div>
+          <div class="cs-meta-item"><dt>timeline</dt><dd>3 months</dd></div>
+          <div class="cs-meta-item"><dt>scope</dt><dd>MVP2</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-wrap cs-hero-panel">
+    <img src="../../assets/images/case-studies/td-bank/image-1.png" alt="One agent. One interface. No phone calls. TD Bank contact update app screenshot, 1,000+ U.S. branches and the contact-center network.">
+  </div>
+
+  <!-- context -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">context</p>
+      <div>
+        <h2 class="cs-heading">contact info lived with the product, <span class="accent">not the customer</span></h2>
+        <div class="cs-body-group">
+          <p class="cs-body lh-28">Updating a customer's contact information is one of the most frequent tasks TD Bank's agents perform everyday. But contact information at TD was stored <strong>per product, not per customer.</strong> Each product — deposit account, credit card, mortgage… — kept its own record, in its own legacy system, <strong>managed by its own product-specific call center.</strong></p>
+          <p class="cs-body lh-28">So the agent sitting with the customer <strong>couldn't make the change themselves,</strong> instead they needed to <strong>call another agent to make the change.</strong> If a customer wanted the same phone number on both a debit account and a credit card needed two <strong>separate calls</strong>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-2.png" alt="The before state, example: one customer, two products, two calls, three agents. Step 1 confirm the products, step 2 make a call, step 3 repeat per product.">
+    </div>
+  </section>
+
+  <!-- the problem -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">the problem</p>
+      <div>
+        <h2 class="cs-heading">simple on the surface, <span class="accent">structural underneath</span></h2>
+        <div class="cs-body-group">
+          <p class="cs-body">The pain showed up on two levels:</p>
+          <p class="cs-body"><strong class="accent">On the surface</strong> — what should be a quick, minutes-long task was a multi-call process. Every handoff was a <strong>chance for error</strong>, every call added <strong>wait time for the customer</strong>, and every redundant agent added <strong>operational cost</strong>.</p>
+          <p class="cs-body">The Contact Update App was built to flip that — from <strong>product-based to profile-based</strong>: one place, one agent, any product. <strong>MVP1</strong> proved the concept for deposit accounts only.</p>
+          <p class="cs-body all-bold">MVP2 — my work — added the second product, credit cards.</p>
+          <p class="cs-body"><strong class="accent">Underneath</strong> — the bank wanted the customer's contact details to stay consistent across products, even when the customer didn't ask for it; there was rarely a good reason for those values to differ. But agents only changed what the customer raised, so <strong>whatever went unmentioned kept its conflicting value</strong>. Nothing ever surfaced the mismatch. This became the real challenge.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the challenge -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">the challenge</p>
+      <div>
+        <h2 class="cs-heading">catching conflicts <span class="accent">before they become rework</span></h2>
+        <div class="cs-callout-list">
+          <div class="cs-callout">
+            <ol start="1"><li>How do we let an agent resolve conflicting contact information across a customer's products — even when the customer didn't ask about it</li></ol>
+          </div>
+          <div class="cs-callout">
+            <ol start="2"><li>without adding friction to a task they perform dozens of times a day?</li></ol>
+          </div>
+        </div>
+        <p class="cs-quote">"the hard part wasn't the screen — it was keeping it effortless for the agent."</p>
+      </div>
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-3.png" alt="One field, three values: mobile phone number the customer asked to update vs. home phone number the customer didn't ask to update, depending on which product was asked to be updated.">
+    </div>
+  </section>
+
+  <!-- the approach -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">the approach</p>
+      <div>
+        <h2 class="cs-heading">map the system <span class="accent">before the screen</span></h2>
+        <div class="cs-approach-boxes">
+          <div class="cs-approach-box">
+            <p><strong class="accent">map the system</strong> — contact data lived in separate legacy systems we'd update rather than replace, so I audited the deposit journey and mapped those flows with the Tech Lead. Knowing where each value came from — and where an update would land — is what surfaced the need for the <em>confirmation moment</em> when conflicting data was found across systems.</p>
+          </div>
+          <div class="cs-approach-box">
+            <p><strong class="accent">design for reuse</strong> — I treated MVP2 as more than "add credit cards", my goal was to design patterns any product — mortgages, loans, investments — could reuse, and join the same journey without retraining agents or engineers rebuilding a new workflow. Also worked with the platform's design leadership so <strong>every pattern aligned with Odyssey's</strong> approved, reusable patterns — extending the shared system rather than adding a one-off.</p>
+          </div>
+          <div class="cs-approach-box">
+            <p><strong class="accent">build the evidence</strong> — with no researcher on the team, my evidence came from the <strong>weekly program calls</strong>: requirements straight from my Product Owner (a former store manager), the Tech Lead, the BSA, and <strong>branch and contact-center leads</strong>. The same forum let me <strong>pressure-test flow logic against operational reality</strong> and stay ahead of shifting requirements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- design decisions -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">design decisions</p>
+      <div class="cs-decisions">
+        <div>
+          <h3 class="cs-decision-heading">1. When systems disagree, force a resolution — <em>the confirmation moment.</em></h3>
+          <div class="cs-body-group">
+            <p class="cs-body">I designed <em>the confirmation moment</em> for when two legacy systems held different values and the customer hadn't asked to update them. <strong>The pattern surfaces the mismatch</strong> right in the agent's flow and asks them to pick the correct one before saving. It groups the options by type (legal and mailing address, mobile/home/work phone) and pre-selects the value just entered — so the common path is a single "Confirm" click.</p>
+            <p class="cs-body"><strong>It costs a click and saves a phone call</strong> — and stops the customer from coming back later to fix a record no one touched.</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="cs-decision-heading">2. Add complexity only where the data requires it.</h3>
+          <div class="cs-body-group">
+            <p class="cs-body">The simpler build was one template for all three tabs — I differentiated instead, because the data genuinely differs. A <strong>mailing address</strong> can legitimately vary by product (a jointly-held account might send statements elsewhere), so it's product-aware and reusable.</p>
+            <p class="cs-body"><strong>Phone and email</strong> are personal to the customer, so they never need product context — and with a single email there's nothing to reconcile, so no confirmation at all. Complexity shows up only where a conflict is possible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-4.png" alt="Design decisions: confirmation moment and product context screenshots. Surface mismatches, complexity where it matters.">
+    </div>
+  </section>
+
+  <!-- validation -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">validation</p>
+      <div>
+        <h2 class="cs-heading accent-2">pressure-tested by the people <span class="accent">who run the operation</span></h2>
+        <div class="cs-body-group">
+          <p class="cs-body">The weekly program calls had already let me pressure-test the designs. Once MVP2 was built, I walked it through structured reviews with branch managers and contact-center managers — the operational leaders who know the agent workflow better than any spec. Their sign-off confirmed three things:</p>
+        </div>
+        <ul class="cs-bullet-list">
+          <li><strong>It met the business requirements</strong> — the flow did what the program set out to do.</li>
+          <li><strong>It fit how branches and contact centers actually operate</strong> — no clash with the real workflow.</li>
+          <li><strong>It held up against the situations agents hit day to day</strong> — the edge cases a requirements doc never lists.</li>
+        </ul>
+        <div class="cs-body-group">
+          <p class="cs-body">In parallel, the design team and QE verified that the build preserved the design intent, screen by screen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scale -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">scale</p>
+      <div>
+        <h2 class="cs-heading accent-2">a feature ships, <span class="accent">a foundation compounds</span></h2>
+        <div class="cs-body-group">
+          <p class="cs-body">The real output of MVP2 wasn't the credit-card screens — it was a set of <strong>reusable interaction patterns</strong>: <em>the confirmation moment</em>, and handling each contact type on its own terms.</p>
+          <p class="cs-body">These patterns <strong>were added to Odyssey's library</strong> of approved, reusable patterns (Odyssey is the platform this micro-app lives in), so other designers could reuse them. The work strengthened the platform's shared system rather than adding a one-off.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-5.png" alt="MVP2, atomic sticker sheet, reusable patterns: ACAUA MVP1 vs. ACAUA MVP2 component library comparison.">
+    </div>
+  </section>
+
+  <!-- impact -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">impact</p>
+      <div>
+        <h2 class="cs-heading accent-2">one agent, one interface, <span class="accent">no phone calls</span></h2>
+        <div class="cs-body-group">
+          <p class="cs-body">Updating a customer's contact info used to fan out into a call per product and a second agent each time. MVP2 collapsed that into one interaction — and set the reusable pattern for every product still to come.</p>
+        </div>
+      </div>
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-6.png" alt="Impact per customer update: 5 impact stats from phone calls reduced to Odyssey's design patterns adopted platform-wide.">
+    </div>
+  </section>
+
+  <!-- reflection -->
+  <section class="cs-section cs-wrap">
+    <div class="cs-row">
+      <p class="cs-label">reflection</p>
+      <div class="cs-reflection">
+        <p><strong>ownership is more than autonomy</strong> — I drove the decisions end-to-end — but ownership meant the legwork around them, too: pulling requirements and technical constraints straight from stakeholders in the weekly program calls, and partnering with the platform's design leadership to align my patterns with Odyssey's approved set. Owning the work wasn't doing it alone — it was taking responsibility for it while pulling in the right people.</p>
+        <p><strong>scalability is a design decision</strong> — the reusable patterns I designed up front are what turned a feature into a foundation — the real win wasn't adding credit cards, it was making the next product almost free to add.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- supporting appendix images -->
+  <section class="cs-section cs-wrap cs-appendix">
+    <div class="cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-7.png" alt="Six address-update flow screen variants for the mailing address decision.">
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-8.png" alt="Flow diagram: update address screen, back-end, USPS standardization screen, and summary screen, with confirm legal address scenarios.">
+    </div>
+    <div class="cs-panel-gap cs-panel">
+      <img src="../../assets/images/case-studies/td-bank/image-9.png" alt="Update email address and update phone numbers screens.">
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer-bar">
+  <div class="wrap footer-bar-inner">
+    <span>© 2026 chris rodriguez. all rights reserved</span>
+    <span>Costa Rica</span>
+  </div>
+</footer>
+
+<script src="../../js/main.js"></script>
+</body>
+</html>
