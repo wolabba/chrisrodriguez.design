@@ -289,7 +289,11 @@ section { padding: var(--space-7) 0; }
 }
 @media (min-width: 1024px) {
   #work { padding-top: 0; }
-  .work-intro { position: relative; padding: 0; }
+  .work-intro {
+    position: relative;
+    padding: 0;
+    min-height: calc(181px - var(--nav-height) + 210px);
+  }
   .work-intro p {
     position: absolute;
     left: 734px;
