@@ -17,6 +17,7 @@
   --accent: #619bff;
 
   --font-text: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Archivo', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   --container-max: 1360px;
   --gutter: 40px;
@@ -194,8 +195,9 @@ section { padding: var(--space-7) 0; }
   .nav-utility { justify-self: end; }
 }
 .nav-logo {
+  font-family: var(--font-heading);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text);
   text-decoration: none;
   white-space: nowrap;
@@ -206,6 +208,7 @@ section { padding: var(--space-7) 0; }
   gap: 20px;
 }
 .nav-links a {
+  font-family: var(--font-heading);
   text-decoration: none;
   font-size: 16px;
   font-weight: 300;
@@ -219,13 +222,18 @@ section { padding: var(--space-7) 0; }
   align-items: center;
   gap: 12px;
 }
-.nav-utility a {
+.nav-utility a, .nav-utility-mobile a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-heading);
   font-size: 16px;
   font-weight: 300;
   color: var(--text);
   text-decoration: none;
   white-space: nowrap;
 }
+.nav-utility a svg, .nav-utility-mobile a svg { flex: none; }
 .nav-utility a:hover { color: var(--ink); }
 .nav-toggle {
   display: none;
