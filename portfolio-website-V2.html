@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chris Rodriguez — Portfolio website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050506; --bg-alt:#0D0D11; --bg-deep:#020203; --bg-elevated:#0A0A0C; --bg-elevated-2:#111114;
+    --surface:rgba(255,255,255,.045); --border:rgba(255,255,255,.1); --border-strong:rgba(255,255,255,.16);
+    --ink:#EDEDEF; --muted:#8A8F98; --muted-2:#828894;
+    --accent:#5E6AD2; --accent-2:#7C3AED; --accent-2-text:#A78BFA;
+    --syn-key:#7DD3FC; --syn-string:#FCD34D;
+    --success:#3DD68C; --success-bg:rgba(61,214,140,.13);
+    --font:'Archivo',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --r:16px; --r-sm:10px; --r-pill:999px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:#fff}
+  a{color:inherit}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 6vw}
+  .skip{position:absolute;left:-9999px;background:var(--accent);color:#fff;padding:12px 20px;font-weight:700;border-radius:var(--r-sm);z-index:200}
+  .skip:focus{left:16px;top:16px}
+
+  /* ambient glow — subtle, Cinema Dark DNA */
+  .glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+  .g1{width:520px;height:520px;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.16;top:-180px;right:-100px}
+  .g2{width:380px;height:380px;background:radial-gradient(circle,var(--accent-2),transparent 70%);opacity:.12;top:120px;left:-140px}
+
+  /* NAV */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,5,6,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+  .nav-in{max-width:1200px;margin:0 auto;padding:20px 6vw;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:15.5px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+  .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+  .nav-links a{font-size:13.5px;font-weight:500;text-decoration:none;color:var(--muted);transition:color 200ms var(--ease);cursor:pointer}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:20px}
+  .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer}
+  .nav-burger span{display:block;width:100%;height:2px;background:var(--ink);border-radius:2px;transition:transform 220ms var(--ease),opacity 220ms var(--ease)}
+  .nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .mobile-menu{display:none;flex-direction:column;max-height:0;overflow:hidden;transition:max-height 260ms var(--ease);border-top:1px solid transparent}
+  .mobile-menu.open{max-height:300px;border-top-color:var(--border)}
+  .mobile-menu a{padding:16px 6vw;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .ghost-link{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms var(--ease)}
+  .ghost-link:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px;padding:10px 20px;border-radius:var(--r-pill);text-decoration:none;cursor:pointer;border:1px solid transparent;transition:all 200ms var(--ease)}
+  .btn-grad{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 4px 20px rgba(94,106,210,.35)}
+  .btn-grad:hover{filter:brightness(1.12);transform:translateY(-1px)}
+  .btn-ghost{border-color:var(--border-strong);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--muted);background:var(--surface)}
+  .btn-lg{padding:15px 30px;font-size:14.5px}
+
+  /* SECTION NAV — numbered sidebar, fixed bottom-left. Tracks the section
+     nearest the viewport center; the active item gets full opacity, ink
+     color and a longer accent rule. Archivo throughout — no mono. */
+  .section-nav{position:fixed;left:28px;bottom:130px;display:flex;flex-direction:column;gap:9px;z-index:60}
+  .section-nav-item{display:flex;align-items:center;gap:9px;font-family:var(--font);font-weight:500;font-size:12.5px;color:var(--muted-2);opacity:.45;transition:all 280ms var(--ease);background:none;border:none;cursor:pointer;padding:0;text-align:left}
+  .section-nav-item .rule{width:12px;height:1.5px;background:var(--muted-2);transition:all 280ms var(--ease);flex-shrink:0}
+  .section-nav-item:hover{opacity:.75}
+  .section-nav-item.active{opacity:1;color:var(--ink)}
+  .section-nav-item.active .rule{width:22px;background:var(--accent-2-text)}
+  .section-nav-item .name{font-weight:700}
+  @media (max-width:900px){ .section-nav{display:none} }
+
+  section{position:relative}
+
+  /* HERO — Bold Typography Poster. Edge-to-edge oversized headline with a
+     role-rotator eyebrow and an underline CTA; sized to stay inside one
+     viewport so nothing but the fixed nav sits above it. */
+  .hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:88px 0 56px;overflow:hidden;position:relative;background:var(--bg)}
+  .hero-eyebrow{font-family:var(--font);font-weight:400;font-size:13.5px;letter-spacing:.02em;color:var(--accent-2-text);margin-bottom:20px;display:flex;align-items:center;gap:10px;position:relative;z-index:2}
+  .hero-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent-2-text);box-shadow:0 0 6px 0 rgba(124,58,237,.9),0 0 14px 2px rgba(124,58,237,.55);flex-shrink:0;animation:blink-dot 1.6s ease-in-out infinite}
+  @keyframes blink-dot{50%{opacity:.3;box-shadow:0 0 3px 0 rgba(124,58,237,.5),0 0 6px 0 rgba(124,58,237,.25)}}
+  .role-rotator{position:relative;display:inline-block;height:1.3em;overflow:hidden;vertical-align:top;min-width:15ch}
+  .role-text{display:block;opacity:1;transform:translateY(0);transition:opacity 320ms var(--ease),transform 320ms var(--ease)}
+  .role-text.is-leaving{opacity:0;transform:translateY(-8px)}
+  .role-text.is-entering{opacity:0;transform:translateY(8px)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  h1{font-weight:800;font-size:clamp(44px,7.6vw,116px);line-height:.98;letter-spacing:-.02em;color:var(--ink);margin:0;position:relative;z-index:2}
+  h1 em{font-style:normal;color:var(--accent-2-text)}
+  .hero-sub-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:44px;padding-top:26px;border-top:1px solid var(--border);flex-wrap:wrap;position:relative;z-index:2}
+  .hero-sub{font-size:16.5px;color:var(--muted);max-width:44ch;margin:0}
+  .hero-ctas{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .underline-cta{position:relative;display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--ink);text-decoration:none;padding-bottom:5px;border-bottom:2px solid var(--accent-2-text);transition:border-color 200ms var(--ease);white-space:nowrap}
+  .underline-cta:hover{border-color:var(--accent)}
+  .proof-row{display:flex;flex-wrap:wrap;gap:0;margin-top:36px;padding-top:22px;border-top:1px solid var(--border);position:relative;z-index:2}
+  .proof-item{padding-right:28px;margin-right:28px;border-right:1px solid var(--border)}
+  .proof-item:last-child{border-right:none;padding-right:0;margin-right:0}
+  .proof-item .val{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .proof-item .lbl{font-size:12.5px;color:var(--muted-2);margin-top:2px}
+
+  /* SECTION HEAD */
+  /* Large stroked "ghost" numeral beside the heading, plus a small eyebrow
+     above the title — the numeral is the signature device that keeps this
+     from reading as a generic kicker-only pattern. */
+  .sec-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:56px}
+  .sec-head>div{display:flex;flex-direction:column;align-items:flex-start}
+  .sec-ghost-num{font-weight:800;font-size:clamp(50px,6.8vw,70px);line-height:1;letter-spacing:-.03em;color:rgba(124,58,237,.18);-webkit-text-stroke:1.5px var(--accent-2-text);flex-shrink:0;user-select:none;align-self:start;margin-top:-6.6px}
+  .sec-eyebrow{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:3px;line-height:1}
+  .sec-title{font-weight:800;font-size:clamp(26px,3.4vw,42px);letter-spacing:-.025em;line-height:1.15;max-width:30ch;margin:0}
+
+  /* WORK */
+  .work{padding:120px 0;background:var(--bg-alt)}
+  .featured{display:grid;grid-template-columns:1fr;margin-bottom:16px}
+  .card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color 220ms var(--ease),box-shadow 220ms var(--ease),transform 220ms var(--ease);text-decoration:none;color:var(--ink);display:block}
+  .card-cover{aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted-2);background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border-bottom:1px solid var(--border)}
+  .card-cover svg{width:26px;height:26px;opacity:.55}
+  .card-cover span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+  .card-cover.illustrated{padding:0}
+  .card-cover.illustrated svg{width:100%;height:100%;display:block}
+  .card-body{padding:30px}
+  .card:hover{border-color:transparent;box-shadow:0 0 0 2px var(--accent);transform:translateY(-3px)}
+  .card.wip-card{cursor:default}
+  .card.wip-card:hover{border-color:var(--border);box-shadow:none;transform:none}
+  .card.wip-card:hover .card-foot svg{transform:none}
+  /* Discipline chip — a constant soft glow (always "bright") plus a periodic
+     sheen sweep (the animated part), staggered per-chip via --sheen-delay so
+     a row of cards doesn't flash in unison. prefers-reduced-motion already
+     kills all ::after animations globally, so this needs no extra guard. */
+  .tag{position:relative;overflow:hidden;display:inline-block;font-size:12.5px;font-weight:600;color:var(--accent-2-text);background:rgba(124,58,237,.14);border-radius:6px;padding:5px 10px;margin-bottom:16px;--sheen-delay:0s}
+  .tag::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.4) 48%,rgba(255,255,255,.4) 52%,transparent 65%);transform:translateX(-130%);animation:chip-sheen 5.5s ease-in-out infinite;animation-delay:var(--sheen-delay)}
+  @keyframes chip-sheen{0%,18%{transform:translateX(-130%)}38%,100%{transform:translateX(130%)}}
+  .card h3{font-weight:700;font-size:clamp(23px,2.6vw,30px);letter-spacing:-.02em;margin-bottom:8px}
+  .card-meta{font-size:14px;color:var(--muted-2);margin-bottom:16px}
+  .meta-company{color:var(--ink);font-weight:700}
+  /* 48ch suits the narrower row-cards; the featured card is ~2x wider and
+     needs its own measure below, or the paragraph strands in a fraction of
+     the available width. */
+  .card p{color:var(--muted);font-size:17px;max-width:48ch;margin-bottom:20px}
+  .featured .card p{max-width:75ch}
+  .stack-row{display:flex;flex-wrap:wrap;gap:8px}
+  .card-body .skill-chip{font-size:12px;padding:5px 11px}
+  .card-metric{display:flex;align-items:center;gap:12px;padding-top:20px;margin-top:20px;border-top:1px solid var(--border)}
+  .card-metric .metric-val{font-size:14px;font-weight:600;color:var(--ink)}
+  .card-metric .metric-val .arrow{color:var(--muted-2);margin:0 3px;font-weight:400}
+  .card-metric .delta{margin-left:auto}
+  .card-foot{display:flex;align-items:center;gap:8px;margin-top:28px;font-size:13.5px;font-weight:600;color:var(--accent-2-text)}
+  .card-foot svg{width:15px;height:15px;transition:transform 200ms var(--ease)}
+  .card:hover .card-foot svg{transform:translate(3px,-3px)}
+
+  .toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,16px);z-index:500;display:flex;align-items:center;gap:10px;background:var(--bg-elevated);border:1px solid var(--border-strong);border-radius:var(--r-sm);padding:13px 18px;box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity 220ms var(--ease),transform 220ms var(--ease)}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast svg{width:18px;height:18px;color:var(--accent-2-text);flex-shrink:0}
+  .toast span{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+
+  .row-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .row-cards .card-body{padding:24px}
+  .row-cards .tag{margin-bottom:14px}
+  .row-cards h3{font-size:21px;margin-bottom:8px}
+
+  /* ABOUT */
+  .about{padding:120px 0;background:var(--bg)}
+  .about-grid{display:grid;grid-template-columns:.62fr 1fr;gap:60px;align-items:stretch}
+  .about-photo-frame{background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+  .about-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+  .about p{color:var(--muted);font-size:16px;max-width:60ch;margin-bottom:16px}
+  .about p strong{color:var(--ink);font-weight:600}
+  .about-chip-group{margin-top:28px}
+  .chip-group-label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-2);margin-bottom:12px}
+  .skills{display:flex;flex-wrap:wrap;gap:9px}
+  .skill-chip{font-size:13.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;color:var(--ink)}
+  .skills .skill-chip{color:var(--accent-2-text);background:rgba(124,58,237,.14);border-color:rgba(124,58,237,.3)}
+
+  /* FOOTER — short utility bar, no card */
+  .footer{padding:32px 0;background:var(--bg-alt);border-top:1px solid var(--border)}
+  .foot-bar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .foot-left{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+  .foot-name{font-weight:700;font-size:14.5px;line-height:1}
+  .foot-avail{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);line-height:1}
+  .foot-avail .dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--success-bg);flex-shrink:0}
+  .foot-links{display:flex;align-items:center;gap:22px}
+  .foot-links a{font-size:13px;text-decoration:none;color:var(--muted);transition:color 200ms;line-height:1}
+  .foot-links a:hover{color:var(--ink)}
+  .foot-meta{font-size:12px;color:var(--muted-2);line-height:1}
+
+  /* Visible by default — content must never depend on JS to become visible.
+     JS opts elements INTO a hidden-then-reveal animation via .js-hidden; if the
+     script never runs (blocked, stripped, errors), nothing ever gets hidden. */
+  .reveal{transition:opacity 600ms var(--ease),transform 600ms var(--ease)}
+  .reveal.js-hidden{opacity:0;transform:translateY(20px)}
+
+  @media (max-width:900px){
+    .row-cards{grid-template-columns:1fr}
+    .about-grid{grid-template-columns:1fr}
+    .about-photo-frame{aspect-ratio:3/4}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-right{display:none}
+    .nav-burger{display:flex}
+    .mobile-menu{display:flex}
+    .nav-in{padding:16px 6vw}
+    .btn-lg{padding:13px 24px;font-size:13.5px}
+    .hero-sub-row{align-items:flex-start}
+    .proof-row{flex-wrap:nowrap}
+    .proof-item{padding-right:14px;margin-right:14px;flex-shrink:0}
+    .proof-item .val{font-size:18px}
+    .proof-item .lbl{font-size:10.5px;white-space:nowrap}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+    .reveal,.reveal.js-hidden{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to content</a>
+
+<nav class="nav" aria-label="Main">
+  <div class="nav-in">
+    <a class="logo" href="#">Chris Rodriguez</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li class="hide-m"><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <a class="ghost-link" href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="ghost-link" href="mailto:chris@wolabba.com">Contact ↗</a>
+    </div>
+    <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a href="mailto:chris@wolabba.com">Contact ↗</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="glow g1" aria-hidden="true"></div>
+  <div class="glow g2" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-eyebrow reveal">
+      <span class="role-rotator"><span class="role-text" id="roleText">Product Design</span></span>
+    </div>
+    <span class="sr-only">Product Design, UX/UI Design, AI-Native Product Development, User Research</span>
+    <h1 class="reveal">Not a mockup.<br>A <em>product.</em></h1>
+    <div class="hero-sub-row reveal">
+      <p class="hero-sub">Senior product designer who ships AI-native final products — 7+ years of experience spanning enterprise fintech and independent studio work.</p>
+      <div class="hero-ctas">
+        <a class="underline-cta" href="#work">See the work →</a>
+        <a class="ghost-link" href="mailto:chris@wolabba.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="proof-row reveal">
+      <div class="proof-item"><div class="val">7+</div><div class="lbl">Years experience</div></div>
+      <div class="proof-item"><div class="val">4</div><div class="lbl">Disciplines</div></div>
+      <div class="proof-item"><div class="val">10+</div><div class="lbl">Projects delivered</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="work" id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-ghost-num" aria-hidden="true">01</span>
+      <div>
+        <span class="sec-eyebrow">Work</span>
+        <h2 class="sec-title">Three case studies, from research to shipped product.</h2>
+      </div>
+    </div>
+
+    <div class="featured reveal">
+      <a class="card" href="case-study-d.html">
+        <div class="card-cover illustrated" aria-hidden="true">
+          <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="tdWinClip"><rect x="50" y="35" width="300" height="155" rx="12"/></clipPath>
+              <filter id="tdShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/>
+              </filter>
+            </defs>
+            <g filter="url(#tdShadow)">
+              <g clip-path="url(#tdWinClip)">
+                <rect x="50" y="35" width="300" height="155" fill="#17171C"/>
+                <rect x="50" y="35" width="300" height="20" fill="#1D1D23"/>
+                <circle cx="62" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+                <circle cx="72" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+                <circle cx="82" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+                <line x1="118" y1="55" x2="118" y2="190" stroke="rgba(255,255,255,.08)"/>
+
+                <rect x="62" y="66" width="46" height="14" rx="5" fill="#A78BFA"/>
+                <rect x="62" y="86" width="46" height="14" rx="5" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2"/>
+
+                <rect x="130" y="64" width="100" height="6" rx="3" fill="rgba(255,255,255,.8)"/>
+
+                <circle cx="138" cy="100" r="4.5" fill="none" stroke="#A78BFA" stroke-width="1.5"/>
+                <circle cx="138" cy="100" r="2" fill="#A78BFA"/>
+                <rect x="148" y="97" width="110" height="5" rx="2.5" fill="rgba(255,255,255,.45)"/>
+                <circle cx="138" cy="118" r="4.5" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.3"/>
+                <rect x="148" y="115" width="90" height="5" rx="2.5" fill="rgba(255,255,255,.2)"/>
+                <circle cx="138" cy="136" r="4.5" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.3"/>
+                <rect x="148" y="133" width="100" height="5" rx="2.5" fill="rgba(255,255,255,.2)"/>
+
+                <rect x="130" y="160" width="52" height="16" rx="8" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.3"/>
+                <rect x="192" y="160" width="60" height="16" rx="8" fill="#A78BFA"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="tag" style="--sheen-delay:0s">UX / UI</span>
+          <h3>Customer contact update app</h3>
+          <div class="card-meta"><span class="meta-company">TD Bank</span> · 2025</div>
+          <p>TD's first contact-update experience built around the customer instead of the product — live across 1,000+ U.S. branches and the contact-center network.</p>
+          <div class="stack-row">
+            <span class="skill-chip">Figma</span>
+            <span class="skill-chip">Systems Thinking</span>
+            <span class="skill-chip">Regulated Industries</span>
+          </div>
+          <div class="card-foot">Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="row-cards reveal">
+      <a class="card wip-card" href="#" id="wipCard" aria-disabled="true">
+        <div class="card-cover illustrated" aria-hidden="true">
+          <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="wipWinClip"><rect x="50" y="35" width="300" height="155" rx="12"/></clipPath>
+              <filter id="wipShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/>
+              </filter>
+              <pattern id="wipHazard" width="14" height="14" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <rect width="14" height="14" fill="#1D1D23"/>
+                <rect width="7" height="14" fill="#A78BFA"/>
+              </pattern>
+            </defs>
+            <g filter="url(#wipShadow)">
+              <g clip-path="url(#wipWinClip)">
+                <rect x="50" y="35" width="300" height="155" fill="#17171C"/>
+                <rect x="50" y="35" width="300" height="20" fill="#1D1D23"/>
+                <circle cx="62" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+                <circle cx="72" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+                <circle cx="82" cy="45" r="2.2" fill="rgba(255,255,255,.25)"/>
+
+                <circle cx="200" cy="95" r="20" fill="none" stroke="#A78BFA" stroke-width="2.5"/>
+                <line x1="200" y1="95" x2="200" y2="83" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="200" y1="95" x2="210" y2="95" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/>
+
+                <text x="200" y="141" text-anchor="middle" font-family="Archivo, sans-serif" font-size="15" font-weight="700" fill="rgba(255,255,255,.85)">In progress</text>
+
+                <rect x="50" y="164" width="300" height="26" fill="url(#wipHazard)" opacity=".9"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="tag" style="--sheen-delay:-1.8s">Product Design · Full-stack</span>
+          <h3>Guide registration app</h3>
+          <div class="card-meta"><span class="meta-company">Tropicfy</span> · 2026</div>
+          <p>Short outcome-focused description of scope and result.</p>
+          <div class="stack-row">
+            <span class="skill-chip">Figma</span>
+            <span class="skill-chip">Claude Code</span>
+            <span class="skill-chip">Supabase</span>
+          </div>
+          <div class="card-foot">Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="xma-case-study.html">
+        <div class="card-cover illustrated" aria-hidden="true">
+          <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="xmaWinClip"><rect x="50" y="35" width="300" height="155" rx="12"/></clipPath>
+              <filter id="xmaShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/>
+              </filter>
+            </defs>
+            <g filter="url(#xmaShadow)">
+              <g clip-path="url(#xmaWinClip)">
+                <rect x="50" y="35" width="300" height="155" fill="#17171C"/>
+                <rect x="50" y="35" width="300" height="18" fill="#1D1D23"/>
+                <rect x="60" y="40" width="8" height="8" rx="2" fill="#A78BFA"/>
+                <rect x="72" y="41" width="34" height="5" rx="2.5" fill="rgba(255,255,255,.7)"/>
+                <rect x="230" y="41" width="18" height="4" rx="2" fill="rgba(255,255,255,.3)"/>
+                <rect x="254" y="41" width="18" height="4" rx="2" fill="rgba(255,255,255,.3)"/>
+
+                <rect x="50" y="53" width="300" height="68" fill="#1B1B21"/>
+                <circle cx="330" cy="70" r="46" fill="#A78BFA" opacity=".14"/>
+                <rect x="62" y="74" width="100" height="7" rx="3.5" fill="rgba(255,255,255,.85)"/>
+                <rect x="62" y="88" width="130" height="4" rx="2" fill="rgba(255,255,255,.4)"/>
+                <rect x="62" y="102" width="66" height="15" rx="7.5" fill="#A78BFA"/>
+
+                <rect x="62" y="132" width="90" height="6" rx="3" fill="rgba(255,255,255,.6)"/>
+                <rect x="62" y="144" width="80" height="30" rx="6" fill="rgba(255,255,255,.08)"/>
+                <rect x="150" y="144" width="80" height="30" rx="6" fill="rgba(255,255,255,.08)"/>
+                <rect x="238" y="144" width="80" height="30" rx="6" fill="rgba(255,255,255,.08)"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="tag" style="--sheen-delay:-3.6s">User Research</span>
+          <h3>Tour booking platform</h3>
+          <div class="card-meta"><span class="meta-company">XMA</span> · 2024</div>
+          <p>Manuel Antonio's first tour-booking platform — giving travelers the local support the major OTAs can't, and cutting fees from 30% to 5%.</p>
+          <div class="stack-row">
+            <span class="skill-chip">Figma</span>
+            <span class="skill-chip">User Interviews</span>
+            <span class="skill-chip">Hotjar</span>
+          </div>
+          <div class="card-foot">Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-ghost-num" aria-hidden="true">02</span>
+      <div>
+        <span class="sec-eyebrow">About</span>
+        <h2 class="sec-title">Design and shipping, same person.</h2>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-photo-frame reveal">
+        <img src="media/chris-photo.png" alt="Portrait of Chris Rodriguez" loading="lazy">
+      </div>
+      <div class="reveal">
+        <p><strong>I work at the intersection of design and AI-native development.</strong> That means prototypes that become production code, and design decisions grounded in what's actually buildable.</p>
+        <p>6+ years spanning enterprise fintech and independent studio work. Most recently, TD Bank's Odyssey platform team (U.S.); before that — and still ongoing — my own studio, Wolabba (Costa Rica); and earlier, web products at SAVAGE Media Group (Chicago, IL).</p>
+        <div class="about-chip-group">
+          <span class="chip-group-label">Capabilities &amp; methodologies</span>
+          <div class="skills">
+            <span class="skill-chip">Product Design</span>
+            <span class="skill-chip">UX Design</span>
+            <span class="skill-chip">UI Design</span>
+            <span class="skill-chip">User Research</span>
+            <span class="skill-chip">Prototyping</span>
+            <span class="skill-chip">AI-Native Development</span>
+            <span class="skill-chip">Design Thinking</span>
+            <span class="skill-chip">Agile</span>
+          </div>
+        </div>
+        <div class="about-chip-group">
+          <span class="chip-group-label">Tools &amp; technologies</span>
+          <div class="skills">
+            <span class="skill-chip">Figma</span>
+            <span class="skill-chip">Claude</span>
+            <span class="skill-chip">Claude Code</span>
+            <span class="skill-chip">Confluence</span>
+            <span class="skill-chip">Hotjar</span>
+            <span class="skill-chip">WordPress</span>
+            <span class="skill-chip">ChatGPT</span>
+            <span class="skill-chip">HTML</span>
+            <span class="skill-chip">AI Generated Media</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" id="contact">
+  <div class="wrap foot-bar reveal">
+    <div class="foot-left">
+      <span class="foot-name">Chris Rodriguez</span>
+      <span class="foot-avail"><span class="dot"></span>Available for new projects</span>
+    </div>
+    <div class="foot-links">
+      <a href="mailto:chris@wolabba.com">Contact ↗</a>
+      <a href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <span class="foot-meta">© 2026 Chris Rodriguez</span>
+    </div>
+  </div>
+</footer>
+
+<nav class="section-nav" aria-label="Section progress">
+  <button class="section-nav-item active" data-target=".hero"><span class="rule"></span>01 <span class="name">Home</span></button>
+  <button class="section-nav-item" data-target="#work"><span class="rule"></span>02 <span class="name">Work</span></button>
+  <button class="section-nav-item" data-target="#about"><span class="rule"></span>03 <span class="name">About</span></button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span id="toastIcon"></span>
+  <span id="toastText"></span>
+</div>
+
+<script>
+  // Content is visible by default (see .reveal CSS). Only opt elements into a
+  // hidden-then-reveal animation if JS actually runs; a mid-script failure can
+  // then only leave already-visible content visible, never stuck hidden.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('js-hidden'); io.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => { el.classList.add('js-hidden'); io.observe(el); });
+  }
+
+  // Hero role rotator — cycles the eyebrow label through Chris's disciplines.
+  // A visually-hidden static list (see .sr-only in markup) carries the same
+  // info to screen readers without a churning aria-live region.
+  const roleEl = document.getElementById('roleText');
+  if (roleEl) {
+    const roles = ['Product Design', 'UX/UI Design', 'AI-Native Product Development', 'User Research'];
+    let roleIndex = 0;
+    setInterval(() => {
+      roleIndex = (roleIndex + 1) % roles.length;
+      if (reduced) {
+        roleEl.textContent = roles[roleIndex];
+        return;
+      }
+      roleEl.classList.add('is-leaving');
+      setTimeout(() => {
+        roleEl.textContent = roles[roleIndex];
+        roleEl.classList.remove('is-leaving');
+        roleEl.classList.add('is-entering');
+        void roleEl.offsetWidth;
+        requestAnimationFrame(() => roleEl.classList.remove('is-entering'));
+      }, 320);
+    }, 2600);
+  }
+
+  // Section nav — highlights whichever of the 4 sections sits closest to the
+  // viewport center, and scrolls to a section on click.
+  const navItems = Array.from(document.querySelectorAll('.section-nav-item'));
+  if (navItems.length) {
+    const targets = navItems.map(b => document.querySelector(b.dataset.target));
+    navItems.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        targets[i].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+      });
+    });
+    function updateSectionNav() {
+      const viewportCenter = window.scrollY + window.innerHeight / 2;
+      let activeIndex = 0, best = Infinity;
+      targets.forEach((t, i) => {
+        const rect = t.getBoundingClientRect();
+        const center = rect.top + window.scrollY + rect.height / 2;
+        const d = Math.abs(center - viewportCenter);
+        if (d < best) { best = d; activeIndex = i; }
+      });
+      navItems.forEach((b, i) => b.classList.toggle('active', i === activeIndex));
+    }
+    window.addEventListener('scroll', updateSectionNav, { passive: true });
+    window.addEventListener('resize', updateSectionNav);
+    updateSectionNav();
+  }
+
+  // Mobile nav — hamburger toggles the dropdown panel; any link inside it
+  // closes the panel again (anchor links scroll the page behind it, so
+  // leaving it open would hide the destination).
+  const navBurger = document.getElementById('navBurger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (navBurger && mobileMenu) {
+    navBurger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      navBurger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        navBurger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Shared toast — used for the WIP-card notice and the email-copied
+  // confirmation below, so there's one show/hide/timer implementation.
+  const toast = document.getElementById('toast');
+  const toastIcon = document.getElementById('toastIcon');
+  const toastText = document.getElementById('toastText');
+  const ICONS = {
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a1 1 0 0 1 1-1h9"/></svg>'
+  };
+  let toastTimer;
+  function showToast(icon, message) {
+    if (!toast) return;
+    toastIcon.innerHTML = ICONS[icon] || '';
+    toastText.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // Guide registration app card isn't a real case study yet — block
+  // navigation and surface a toast instead of linking anywhere.
+  const wipCard = document.getElementById('wipCard');
+  if (wipCard) {
+    wipCard.addEventListener('click', e => {
+      e.preventDefault();
+      showToast('clock', 'This case study is still in progress');
+    });
+  }
+
+  // Contact links: mailto: opens the OS mail handler where one exists
+  // (Mail on Mac/iPhone, Gmail on Android), but Windows users without a
+  // configured desktop client get no visible result — so also copy the
+  // address to the clipboard as a fallback, confirmed via the same toast.
+  const CONTACT_EMAIL = 'chris@wolabba.com';
+  function copyEmail() {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(CONTACT_EMAIL);
+    }
+    const ta = document.createElement('textarea');
+    ta.value = CONTACT_EMAIL;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      copyEmail().then(() => showToast('copy', 'Email copied to clipboard'));
+    });
+  });
+</script>
+</body>
+</html>
