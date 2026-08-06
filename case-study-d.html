@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer contact update app — Case Study D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050506; --bg-alt:#0D0D11; --bg-elevated:#0A0A0C; --bg-elevated-2:#111114;
+    --surface:rgba(255,255,255,.045); --border:rgba(255,255,255,.1); --border-strong:rgba(255,255,255,.16);
+    --ink:#EDEDEF; --muted:#8A8F98; --muted-2:#828894;
+    --accent:#5E6AD2; --accent-2:#7C3AED; --accent-2-text:#A78BFA; --success:#3DD68C; --success-bg:rgba(61,214,140,.13); --danger:#FF453A;
+    --font:'Archivo',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(.16,1,.3,1); --r:16px; --r-sm:10px; --r-pill:999px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 6vw}
+  .col{max-width:1000px;margin:0 auto;padding:0 6vw}
+  .glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+  .g1{width:520px;height:520px;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.14;top:-160px;right:-100px}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,5,6,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+  .nav-in{max-width:1200px;margin:0 auto;padding:20px 6vw;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:15.5px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+  .back-link{font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color 200ms var(--ease)}
+  .back-link:hover{color:var(--ink)}
+  .back-link .bl-short{display:none}
+  @media (max-width:480px){ .back-link .bl-full{display:none} .back-link .bl-short{display:inline} }
+
+
+  /* ============ CASE HEADER (from Template A) ============ */
+  .case-header{padding:150px 0 64px;overflow:hidden;position:relative;border-bottom:1px solid var(--border)}
+  /* Discipline chip sheen — same staggered sweep as the homepage Work cards. */
+  .tag{position:relative;overflow:hidden;display:inline-block;font-size:12.5px;font-weight:600;color:var(--accent-2-text);background:rgba(124,58,237,.14);border-radius:6px;padding:5px 10px;margin-right:8px;margin-bottom:20px;--sheen-delay:0s}
+  .tag::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.4) 48%,rgba(255,255,255,.4) 52%,transparent 65%);transform:translateX(-130%);animation:chip-sheen 5.5s ease-in-out infinite;animation-delay:var(--sheen-delay)}
+  @keyframes chip-sheen{0%,18%{transform:translateX(-130%)}38%,100%{transform:translateX(130%)}}
+  .case-header h1{font-weight:800;font-size:clamp(34px,5vw,64px);letter-spacing:-.025em;line-height:1.05;max-width:16ch;margin-bottom:44px;position:relative;z-index:2}
+  .meta-block{padding-top:24px;border-top:1px solid var(--border);position:relative;z-index:2}
+  .meta-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 0}
+  .meta-row:not(:last-child){margin-bottom:20px}
+  .meta-item{padding:0 22px 8px 0;border-right:1px solid var(--border)}
+  .meta-item:last-child{border-right:none;padding-right:0}
+  .meta-item .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);margin-bottom:6px}
+  .meta-item .v{font-size:15px;font-weight:700}
+  .cover{aspect-ratio:16/8;margin-top:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted-2);background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;overflow:hidden}
+  .cover svg{width:30px;height:30px;opacity:.5}
+  .cover span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.5}
+  .cover img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ============ ARTICLE BODY (from Template B) ============ */
+  .article{padding:90px 0}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:14px}
+  .lede{font-size:22px;line-height:1.55;font-weight:500;color:var(--ink);margin:0}
+  .art-section{margin-bottom:64px}
+  .art-section:last-child{margin-bottom:0}
+  .art-section h2{font-weight:800;font-size:clamp(22px,2.6vw,28px);letter-spacing:-.02em;margin-bottom:18px}
+  .art-section p{font-size:17px;color:var(--muted);margin-bottom:16px}
+  .art-section p strong{color:var(--ink)}
+  .art-section p.lede{font-size:22px;line-height:1.55;font-weight:500;color:var(--ink);margin:0}
+
+  .pull-quote{border-left:2.5px solid var(--accent-2-text);padding:4px 0 4px 26px;margin:44px 0;font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1.4;color:var(--ink)}
+  .pull-quote cite{display:block;font-style:normal;font-size:13px;font-weight:500;color:var(--muted-2);margin-top:12px}
+
+  /* Vertical spine timeline — a continuous accent→accent-2 gradient runs
+     the full length via three real segments (never a single element,
+     since the line must end exactly at the last dot and each segment's
+     sweep must sync to the dot it arrives at). A sequenced sheen travels
+     dot1 → seg1 → dot2 → seg2 → dot3 → seg3 → dot4, each dot flashing a
+     purple glow (matching the hero role-rotator dot) the instant the
+     preceding segment's sweep reaches it. Positions/timing are computed
+     in JS from real layout — row heights vary with text length. */
+  .vs-list{position:relative;padding-left:48px;margin-top:36px}
+  .vs-line-seg{position:absolute;left:13px;width:3px;border-radius:2px;overflow:hidden;z-index:0}
+  .vs-line-seg .sweep{position:absolute;inset:0;background:linear-gradient(200deg,transparent 35%,rgba(255,255,255,.75) 48%,rgba(255,255,255,.75) 52%,transparent 65%);animation:vseg-sheen 4s ease-in-out infinite;animation-fill-mode:backwards}
+  @keyframes vseg-sheen{0%{transform:translateY(-130%)}15%{transform:translateY(130%)}100%{transform:translateY(130%)}}
+  .vs-row{position:relative;padding-bottom:36px}
+  .vs-row:last-child{padding-bottom:0}
+  .vs-dot{position:absolute;left:-48px;top:-3px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:14px;color:#fff;z-index:1;animation:dot-glow-blink 4s ease-in-out infinite;animation-fill-mode:backwards}
+  @keyframes dot-glow-blink{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}1.5%{box-shadow:0 0 6px 0 rgba(124,58,237,.9),0 0 14px 2px rgba(124,58,237,.55)}11%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+  .vs-row h4{font-size:14.5px;font-weight:700;margin:0}
+  .vs-row p{font-size:13.5px;color:var(--muted);margin:6px 0 0}
+
+  .breakout{margin:64px calc(50% - 50vw);width:100vw;aspect-ratio:16/8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted-2);background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  /* No .breakout svg / .breakout span rules here on purpose. Every
+     .breakout on this page now holds real built content (op-breakout,
+     confirm-breakout, final-breakout) instead of the placeholder
+     icon+label it originally had, so a generic "any svg/span inside a
+     .breakout" selector has nothing legitimate left to target — it would
+     only ever silently reach into unrelated nested icons/labels and mess
+     with their opacity/size/case, which is exactly what happened here
+     more than once. If a real placeholder breakout is ever reintroduced,
+     scope its rule to a dedicated class (e.g. .breakout-placeholder svg)
+     instead of resurrecting the bare-tag descendant selector. */
+
+  /* Confirmation-moment breakout — full-bleed like the other breakouts.
+     The screenshot (a portrait app screen, not a wide banner) sits left
+     with 3 numbered pins on the regions called out in the Design
+     Decisions text; a matching numbered legend stacks to its right. */
+  .breakout.confirm-breakout{aspect-ratio:auto;display:block;padding:64px 0}
+  .confirm-wrap{max-width:1180px;margin:0 auto;padding:0 6vw}
+  .confirm-row{display:flex;align-items:center;gap:56px;justify-content:center}
+  .confirm-shot{position:relative;width:520px;max-width:100%;flex-shrink:0;border-radius:8px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .confirm-shot img{display:block;width:100%;height:auto}
+  .confirm-pin{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--accent-2);color:#fff;font-family:var(--font);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(124,58,237,.32);transform:translate(-50%,-50%)}
+  .confirm-legend{display:flex;flex-direction:column;gap:14px;max-width:320px}
+  .confirm-legend-tag{display:flex;gap:12px;align-items:center;font-size:13px;font-weight:700;color:#fff;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px}
+  .confirm-legend .cl-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px}
+  .confirm-legend .cl-num{width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,.18);color:var(--accent-2-text);font-weight:800;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .confirm-legend .cl-num svg{width:14px;height:14px}
+  .confirm-legend h5{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px}
+  .confirm-legend p{font-size:12px;color:var(--muted);line-height:1.5}
+  @media (max-width:960px){ .confirm-row{flex-direction:column} .confirm-legend{max-width:520px;width:100%} }
+
+  /* Final designs breakout — 4 equal columns filling the wide wrap, no
+     scrolling. The 4 shipped screens have wildly different native aspect
+     ratios (one is a very tall scrolling form, one is nearly square), so
+     every frame is cropped to the same portrait ratio via object-fit:cover
+     rather than hand-picked crop coordinates — the browser handles it
+     responsively. */
+  .breakout.final-breakout{aspect-ratio:auto;display:block;padding:56px 0}
+  .final-wrap{max-width:1920px;margin:0 auto;padding:0 3vw}
+  .final-carousel{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
+  .final-carousel .fc-frame{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+  .final-carousel .fc-frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+  .final-carousel .fc-cap{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.5}
+  .final-carousel .fc-cap b{color:#fff;display:block;font-size:14px;margin-bottom:3px}
+  @media (max-width:900px){ .final-carousel{grid-template-columns:1fr 1fr} }
+  @media (max-width:560px){ .final-carousel{grid-template-columns:1fr} }
+
+  /* Old-process infographic — "before this app" horizontal timeline, one
+     row per call/product. Each row is a self-contained left-to-right
+     spine (Customer → Front-line agent → Back-office agent), the exact
+     same proven pattern as the vertical spine just laid on its side —
+     dot-to-dot connectors only ever travel within a single row, so they
+     can never cross another row's text (the earlier swimlane version's
+     diagonal cross-lane connectors could, which is why it read as messy).
+     Two rows stacked = the repetition itself tells the "twice" story.
+     Below 640px three columns don't have room to breathe, so it collapses
+     to a plain static step list instead of cramming. */
+  .breakout.op-breakout{aspect-ratio:auto;display:block;padding:56px 0 64px}
+  .op-wrap{max-width:1180px;margin:0 auto;padding:0 6vw}
+  .op-eyebrow{font-size:22px;line-height:1.5;font-weight:500;letter-spacing:normal;color:var(--muted-2);text-align:center;margin-bottom:48px}
+  .op-eyebrow b{color:var(--accent-2-text);font-weight:700}
+
+  .op-diagram{display:flex;flex-direction:column;gap:24px}
+  .op-row-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:32px 36px}
+  .op-row-card .op-row-tag{margin-bottom:28px;opacity:1;text-transform:none;font-size:12.5px;font-weight:600;letter-spacing:normal}
+  .op-hspine{position:relative;display:flex;align-items:stretch;justify-content:space-between;gap:24px}
+  .op-h-seg{position:absolute;top:0;height:3px;border-radius:2px;overflow:hidden;z-index:0}
+  .op-h-seg .sweep-x{position:absolute;inset:0;background:linear-gradient(90deg,transparent 35%,rgba(255,255,255,.75) 48%,rgba(255,255,255,.75) 52%,transparent 65%);animation-fill-mode:backwards}
+  /* Four phases run in strict sequence on one shared master cycle: row 1's
+     pills sweep → row 1's timeline sweeps → row 2's pills sweep → row 2's
+     timeline sweeps, each starting the instant the previous one finishes.
+     Because pill sweeps (chip-sheen-style) and timeline sweeps/glows are
+     different animations with different natural travel times, the only way
+     to chain them without drift is to compute one master cycle length in
+     JS and inject matching @keyframes for it — see layoutOldProcess()
+     below, which writes #opDynamicKeyframes. animation-duration and
+     animation-delay for every pill/dot/segment come from that injected
+     rule, not from fixed values here. */
+  .op-h-node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;flex:1;min-width:0}
+  .op-h-endcap{flex:0 0 auto}
+  .op-dot svg{width:16px;height:16px;opacity:1}
+  .op-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:13.5px;color:#fff;flex-shrink:0;border:3px solid var(--bg);animation-fill-mode:backwards}
+  .op-row-card .op-row-tag::after{animation-fill-mode:backwards}
+  .op-h-card{width:100%;flex:1;display:flex;flex-direction:column;background:var(--bg-elevated-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;margin-top:16px}
+  .op-h-card.done{background:var(--success-bg);border-color:rgba(61,214,140,.3)}
+  .op-h-actor{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fff;margin-bottom:6px}
+  .op-h-node h5{font-size:15px;font-weight:700;color:#fff;margin:0 0 6px;letter-spacing:-.005em;line-height:1.3}
+  .op-h-node p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0}
+  .op-h-node .op-check{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#fff;margin-top:10px}
+  .op-h-node .op-check svg{width:17px;height:17px;flex-shrink:0;color:var(--success)}
+
+  @media (max-width:640px){ .op-diagram{display:none} }
+  .op-mobile{display:none}
+  @media (max-width:640px){ .op-mobile{display:block} }
+  .op-m-step{display:flex;gap:14px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;margin-bottom:10px}
+  .op-m-step:last-child{margin-bottom:0}
+  .op-m-step.done{background:var(--success-bg);border-color:rgba(61,214,140,.3)}
+  .op-m-icon{width:34px;height:34px;border-radius:10px;background:rgba(124,58,237,.16);color:var(--accent-2-text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .op-m-step.done .op-m-icon{background:rgba(61,214,140,.18);color:var(--success)}
+  .op-m-icon svg{width:17px;height:17px;opacity:1}
+  .op-m-actor{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#fff;margin-bottom:5px}
+  .op-m-step h5{font-size:15px;font-weight:700;color:#fff;margin:0 0 5px}
+  .op-m-step p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+  .op-m-step .op-check{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#fff;margin-top:9px}
+  .op-m-step .op-check svg{width:17px;height:17px;color:var(--success)}
+  .op-m-group{margin-top:22px}
+  .op-m-group:first-child{margin-top:0}
+  .op-m-group-tag{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent-2-text);margin:0 0 12px}
+
+  .stat-line{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .stat-line-item{background:var(--success-bg);border:1px solid rgba(61,214,140,.3);border-radius:var(--r-sm);padding:22px}
+  .stat-line-item .val{font-size:36px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;color:var(--success)}
+  .stat-line-item .val .arrow{color:var(--muted-2);margin:0 6px;font-weight:400}
+  .stat-line-item .val .before{color:var(--danger)}
+  .stat-line-item .lbl{font-size:13px;line-height:1.3;font-weight:700;color:var(--ink)}
+  .stat-line-item .desc{font-size:13px;line-height:1.5;color:var(--muted);margin-top:10px}
+  @media (max-width:480px){ .stat-line{grid-template-columns:1fr} }
+
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .info-grid .lbl{display:flex;align-items:center;gap:8px}
+  .info-grid .lbl svg{width:18px;height:18px;flex-shrink:0;color:var(--success)}
+  @media (max-width:700px){ .info-grid{grid-template-columns:1fr} }
+
+  /* Design decisions — 3 cards, 2-up then 1, all the same size (reuses
+     .info-grid's layout); the 3rd is "featured" via a tinted background,
+     not a different size. */
+  .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  .decision-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:24px;display:flex;gap:16px;align-items:flex-start}
+  .decision-card .dc-icon{width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.14);color:var(--accent-2-text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .decision-card .dc-icon svg{width:19px;height:19px}
+  .decision-card h4{font-size:15px;font-weight:700;margin-bottom:8px}
+  .decision-card p{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0}
+  .decision-card.featured{background:rgba(94,106,210,.16);border-color:rgba(94,106,210,.55)}
+  .decision-card.featured .dc-icon{background:rgba(94,106,210,.3);color:#A9B2E8}
+  @media (max-width:700px){ .decision-grid{grid-template-columns:1fr} }
+
+  .closing{padding:80px 6vw 120px;text-align:center}
+  .closing .k{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-2-text);margin-bottom:10px}
+  .closing a{font-weight:800;font-size:clamp(24px,3.4vw,38px);text-decoration:none;display:inline-flex;align-items:center;gap:12px;letter-spacing:-.02em;max-width:100%}
+  .closing a span{min-width:0}
+  .closing a svg{width:26px;height:26px;flex-shrink:0;transition:transform 200ms var(--ease)}
+  .closing a:hover svg{transform:translate(4px,-4px)}
+
+  @media (max-width:640px){
+    .meta-row{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:22px}
+    .meta-item{border-right:none;padding:0}
+    .meta-item:nth-child(odd){border-right:1px solid var(--border);padding-right:16px}
+    .lede{font-size:19px}
+    .pull-quote{font-size:20px}
+  }
+
+  body.locked{overflow:hidden}
+  .pw-gate{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+  .pw-card{max-width:340px;width:100%;text-align:center}
+  .pw-icon{width:40px;height:40px;margin:0 auto 20px;color:var(--accent-2-text)}
+  .pw-icon svg{width:100%;height:100%}
+  .pw-card h2{font-size:19px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;color:var(--ink)}
+  .pw-card p{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+  .pw-form{display:flex;gap:8px}
+  .pw-form input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;color:var(--ink);font-family:var(--font);font-size:14px}
+  .pw-form input:focus{outline:none;border-color:var(--accent-2)}
+  .pw-form button{background:var(--accent-2);color:#fff;border:none;border-radius:var(--r-sm);padding:11px 18px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;font-family:var(--font)}
+  .pw-form button:hover{opacity:.9}
+  .pw-error{margin-top:12px;font-size:13px;color:var(--danger);opacity:0;transition:opacity 150ms var(--ease)}
+  .pw-error.show{opacity:1}
+</style>
+</head>
+<body class="locked">
+
+<div class="pw-gate" id="pwGate">
+  <div class="pw-card">
+    <div class="pw-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </div>
+    <h2>This case study is private</h2>
+    <p>Enter the password to continue.</p>
+    <form class="pw-form" id="pwForm" autocomplete="off">
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="off">
+      <button type="submit">Unlock</button>
+    </form>
+    <div class="pw-error" id="pwError">Incorrect password — try again.</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="portfolio-website-V2.html">Chris Rodriguez</a>
+    <a class="back-link" href="portfolio-website-V2.html#work"><span class="bl-full">← Back to work</span><span class="bl-short">← Work</span></a>
+  </div>
+</nav>
+
+<header class="case-header">
+  <div class="glow g1" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="tag" style="--sheen-delay:0s">UX / UI</span><span class="tag" style="--sheen-delay:1.1s">TD Bank</span>
+    <h1>Customer contact update app</h1>
+    <div class="meta-block">
+      <div class="meta-row">
+        <div class="meta-item"><div class="k">Company</div><div class="v">TD Bank</div></div>
+        <div class="meta-item"><div class="k">Platform</div><div class="v">Desktop web app</div></div>
+        <div class="meta-item"><div class="k">Role</div><div class="v">UX/UI Designer</div></div>
+        <div class="meta-item"><div class="k">Users</div><div class="v">U.S. front-line agents</div></div>
+        <div class="meta-item"><div class="k">Team</div><div class="v">Cross-functional</div></div>
+        <div class="meta-item"><div class="k">Timeline</div><div class="v">Q425–Q126</div></div>
+      </div>
+    </div>
+    <div class="cover">
+      <img src="media/td-bank-featured.png" alt="Customer contact update app — Odyssey Platform UI showing the Address, Phone, and Email update flow">
+    </div>
+  </div>
+</header>
+
+<article class="article">
+  <div class="col">
+    <section class="art-section" id="throughline">
+      <p class="lede">TD's first contact-update experience built around the customer instead of the product — a colleague experience that replaces a multi-call process with one interaction, now live across 1,000+ U.S. branches and the contact-center network.</p>
+    </section>
+
+    <section class="art-section" id="context">
+      <div class="eyebrow">Context</div>
+      <h2>Contact info lived with the product, not the customer</h2>
+      <p>The data was managed at the product-level, not profile-level. Each product — deposit account, credit card... — kept its own data, managed by product-specific call centers.</p>
+      <p>The agent servicing the customer couldn't make the change themselves, they needed to call a second agent to make the change. Separate calls per product.</p>
+    </section>
+
+    <div class="breakout op-breakout">
+      <div class="op-wrap">
+        <div class="op-eyebrow">Before state — <b>a contact update meant escalating to two different back-office agents</b></div>
+
+        <!-- Desktop: two horizontal timelines, one per product/visit-step.
+             Each row is its own self-contained Customer → Front-line
+             agent → Back-office agent spine — same pattern as the
+             vertical spine in Approach, just horizontal. -->
+        <div class="op-diagram" id="opDiagram">
+          <div class="op-row-card">
+            <span class="tag op-row-tag" style="--sheen-delay:0s">Deposit account</span><span class="tag op-row-tag" style="--sheen-delay:1.1s">Call #1</span>
+            <div class="op-hspine" id="opRow0">
+              <div class="op-h-node"><div class="op-dot" id="opR0Dot0">1</div><div class="op-h-card"><div class="op-h-actor">Customer</div><h5>Walk into the branch</h5></div></div>
+              <div class="op-h-node"><div class="op-dot" id="opR0Dot1">2</div><div class="op-h-card"><div class="op-h-actor">Front-line agent</div><h5>Loops in a second agent</h5></div></div>
+              <div class="op-h-node"><div class="op-dot" id="opR0Dot2">3</div><div class="op-h-card done"><div class="op-h-actor">Second agent - deposit</div><h5>Update made</h5></div></div>
+              <div class="op-h-node op-h-endcap"><div class="op-dot" id="opR0Dot3"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"/></svg></div></div>
+            </div>
+          </div>
+          <div class="op-row-card">
+            <span class="tag op-row-tag" style="--sheen-delay:0s">Credit card — same visit, again</span><span class="tag op-row-tag" style="--sheen-delay:1.1s">Call #2</span>
+            <div class="op-hspine" id="opRow1">
+              <div class="op-h-node"><div class="op-dot" id="opR1Dot0">5</div><div class="op-h-card"><div class="op-h-actor">Customer</div><h5>Still at the counter</h5></div></div>
+              <div class="op-h-node"><div class="op-dot" id="opR1Dot1">6</div><div class="op-h-card"><div class="op-h-actor">Front-line agent</div><h5>Loops in a third agent</h5></div></div>
+              <div class="op-h-node"><div class="op-dot" id="opR1Dot2">7</div><div class="op-h-card done"><div class="op-h-actor">Third agent - credit card</div><h5>Update made</h5></div></div>
+              <div class="op-h-node op-h-endcap"><div class="op-dot" id="opR1Dot3"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5l3.5 3.5 7.5-8.5"/></svg></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile fallback: static step list. One "walks in" card, then
+             two grouped escalations — same content, no swimlanes. -->
+        <div class="op-mobile">
+          <div class="op-m-group">
+            <div class="op-m-group-tag">Deposit account</div>
+            <div class="op-m-step"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></div><div><div class="op-m-actor">Customer</div><h5>Walk into the branch</h5></div></div>
+            <div class="op-m-step"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"/></svg></div><div><div class="op-m-actor">Front-line agent</div><h5>Loops in a second agent</h5></div></div>
+            <div class="op-m-step done"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg></div><div><div class="op-m-actor">Second agent - deposit</div><h5>Update made</h5></div></div>
+          </div>
+
+          <div class="op-m-group">
+            <div class="op-m-group-tag">Credit card — same visit, again</div>
+            <div class="op-m-step"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></div><div><div class="op-m-actor">Customer</div><h5>Still at the counter</h5></div></div>
+            <div class="op-m-step"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"/></svg></div><div><div class="op-m-actor">Front-line agent</div><h5>Loops in a third agent</h5></div></div>
+            <div class="op-m-step done"><div class="op-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg></div><div><div class="op-m-actor">Third agent - credit card</div><h5>Update made</h5></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="art-section" id="problem">
+      <div class="eyebrow">The problem</div>
+      <h2>Catching conflicts before they become rework</h2>
+      <p>MVP1 proved the concept for deposit accounts only. MVP2 — my work — added the second product, credit cards. Becoming the first time that multiple products could be updated in one place (the reason this app was built for).</p>
+      <p>Adding a second product surfaced a new problem — MVP1 didn't support a scenario to keep contact details consistent across products when the customer didn't ask for it.</p>
+    </section>
+
+    <section class="art-section" id="quote">
+      <blockquote class="pull-quote">
+        "How do we let an agent resolve conflicting contact info across a customer's products — even when the customer didn't ask about it — without adding friction to a task they perform dozens of times a day?"
+      </blockquote>
+    </section>
+
+    <section class="art-section" id="design-decisions">
+      <div class="eyebrow">Design decisions</div>
+      <h2>A feature ships, a foundation compounds</h2>
+      <p>Beyond adding a new product to the existing journey, we were designing the foundation why this app was built for — an experience capable to let the bank's front-line agents make all the changes in one place.</p>
+      <div class="decision-grid">
+        <div class="decision-card">
+          <div class="dc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg></div>
+          <div><h4>Design for re-use</h4>
+          <p>I designed the patterns so any future product can join the same journey — with no retraining for frontline agents and no new workflows for engineers to build.</p></div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg></div>
+          <div><h4>Complex only where it matters</h4>
+          <p>I split the data into product-aware and profile-aware: a mailing address can vary by product (joint accounts), so its tab carries product context; phone and email stay profile-aware.</p></div>
+        </div>
+        <div class="decision-card featured">
+          <div class="dc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.745 3.745 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg></div>
+          <div><h4>The confirmation moment pattern</h4>
+          <p>When two systems disagreed on a value the customer hadn't asked to change, it surfaces the mismatch and asks the agent to confirm — pre-selecting the latest value, so the common path is one click.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="breakout confirm-breakout">
+      <div class="confirm-wrap">
+        <div class="confirm-row">
+          <div class="confirm-shot">
+            <img src="media/confirm-address.png" alt="Confirm legal address screen — the confirmation moment pattern in the Odyssey contact update app">
+            <div class="confirm-pin" style="top:29.3%;left:36%">1</div>
+            <div class="confirm-pin" style="top:47.3%;left:36%">2</div>
+            <div class="confirm-pin" style="top:71.5%;left:79.5%">3</div>
+          </div>
+          <div class="confirm-legend">
+            <div class="confirm-legend-tag"><div class="cl-num"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.5l3.5 3.5 7.5-8.5"/></svg></div><div>The "confirmation moment" pattern</div></div>
+            <div class="cl-item"><div class="cl-num">1</div><div><h5>Surfaces the mismatch inline</h5><p>Right in the agent's flow, not a separate screen.</p></div></div>
+            <div class="cl-item"><div class="cl-num">2</div><div><h5>Pre-selects the value just entered</h5><p>The common case needs no extra decision.</p></div></div>
+            <div class="cl-item"><div class="cl-num">3</div><div><h5>One click confirms it</h5><p>Because the match is already selected.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="art-section" id="approach">
+      <div class="eyebrow">Approach</div>
+      <h2>Map the system before the screen</h2>
+      <p>I set up periodic program calls with the stakeholders and subject matter experts — branch managers, contact-center managers, business management specialists... — to gather continuous feedback and pressure-test the MVP2 across its lifecycle from wireframes to the final product.</p>
+      <div class="vs-list" id="vsList">
+        <div class="vs-line-seg" id="vsSeg0"><span class="sweep"></span></div>
+        <div class="vs-line-seg" id="vsSeg1"><span class="sweep"></span></div>
+        <div class="vs-line-seg" id="vsSeg2"><span class="sweep"></span></div>
+        <div class="vs-row"><div class="vs-dot"><span>01</span></div><h4>Map the system</h4><p>Contact data lived in separate legacy systems, I collaborated with our Tech Lead to understand where each value came from and where an update would land — this surfaced the need for the confirmation moment when conflicting data was found across systems.</p></div>
+        <div class="vs-row"><div class="vs-dot"><span>02</span></div><h4>Build the evidence</h4><p>My evidence came from the periodic calls I set up to gather feedback from our stakeholders and SMEs. The same forum let me pressure-test flow logic against operational reality and stay ahead of shifting requirements.</p></div>
+        <div class="vs-row"><div class="vs-dot"><span>03</span></div><h4>Collab with Odyssey's design leadership</h4><p>Collaborated with design leadership to keep every pattern aligned with Odyssey's approved, reusable patterns — extending the shared system rather than adding a one-off.</p></div>
+        <div class="vs-row"><div class="vs-dot"><span>04</span></div><h4>Deliver</h4><p>In parallel, I set up periodic calls between the design team, engineers and QE to verify that the build preserved the design intent, screen by screen.</p></div>
+      </div>
+    </section>
+
+    <section class="art-section" id="final-designs">
+      <div class="eyebrow">Final designs</div>
+      <h2>From update to confirmed</h2>
+    </section>
+
+    <div class="breakout final-breakout">
+      <div class="final-wrap">
+        <div class="final-carousel">
+          <div class="fc-cell"><div class="fc-frame"><img src="media/flow-1-new.png" alt="Update profile legal and mailing addresses"></div><div class="fc-cap"><b>Update addresses</b>Front-line agent edits legal and mailing addresses.</div></div>
+          <div class="fc-cell"><div class="fc-frame"><img src="media/confirm-address-2.png" alt="Confirm legal address"></div><div class="fc-cap"><b>Confirm mismatch</b>Pattern surfaces the conflict, pre-selects the match.</div></div>
+          <div class="fc-cell"><div class="fc-frame"><img src="media/flow-3-new.png" alt="USPS standardization review"></div><div class="fc-cap"><b>USPS standardization</b>Optional cleanup before saving.</div></div>
+          <div class="fc-cell"><div class="fc-frame"><img src="media/flow-4-new.png" alt="Summary and completion"></div><div class="fc-cap"><b>Summary</b>Confirms what changed, surfaces next steps.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="art-section" id="validation">
+      <div class="eyebrow">Validation</div>
+      <h2>Pressure-tested by the stakeholders and SMEs</h2>
+      <p>Once MVP2 was built, I walked it through structured reviews with stakeholders, business management, design leadership and subject matter experts to confirm it met business and product requirements, as well to confirm day-to-day edge cases within the branches and contact centers were properly treated up-front. Their sign-off confirmed three things:</p>
+      <div class="info-grid">
+        <div class="stat-line-item"><div class="lbl"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>Business requirements</div><p class="desc">The app reduced operational cost and chance for error during contact update, and kept data consistent across products in all possible scenarios.</p></div>
+        <div class="stat-line-item"><div class="lbl"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>Operational reality</div><p class="desc">Fits how front-line agents actually operate — no clash with the real workflow.</p></div>
+        <div class="stat-line-item"><div class="lbl"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>Day-to-day edge cases</div><p class="desc">It held up against the situations agents hit day to day — the edge cases a requirements doc never lists.</p></div>
+      </div>
+    </section>
+
+    <section class="art-section" id="impact">
+      <div class="eyebrow">Impact</div>
+      <h2>One agent, one interface, no phone calls</h2>
+      <p>Updating a customer's contact info used to fan out into a call per product and a second agent each time. MVP2 collapsed that into one interaction — and set the reusable pattern for every product still to come.</p>
+      <div class="stat-line">
+        <div class="stat-line-item"><div class="val"><span class="before">3</span><span class="arrow">→</span>1</div><div class="lbl">Agents involved</div><p class="desc">A customer with 2 products required to loop-in 2 more agents in the process. With MVP2, one agent is able to make the changes themselves.</p></div>
+        <div class="stat-line-item"><div class="val"><span class="before">2</span><span class="arrow">→</span>0</div><div class="lbl">Phone calls</div><p class="desc">A phone call were required per each product update, this experience replaces that process with one interaction.</p></div>
+        <div class="stat-line-item"><div class="val"><span class="before">2</span><span class="arrow">→</span>0</div><div class="lbl">Legacy systems required</div><p class="desc">We replaced two legacy systems and more will be replaced as soon as any product become a new feature in the program.</p></div>
+        <div class="stat-line-item"><div class="val">1,000+</div><div class="lbl">US Branches</div><p class="desc">Successfully rolled out across 1,000+ branches and the U.S. contact-center network.</p></div>
+      </div>
+    </section>
+
+    <section class="art-section" id="reflection">
+      <div class="eyebrow">Reflection</div>
+      <h2>Built to be inherited, not just shipped</h2>
+      <p>What I'm proudest of is that this work didn't stay a feature: alongside the platform's design leadership, the patterns I designed were contributed to Odyssey's shared, reusable system for the whole design org to build on. If I could change one thing, I'd have secured the budget for a researcher to validate the experience at the usability level. Even so, it held up — we met every business objective, and reviewed the work with leadership and the frontline SMEs to confirm that agents already fluent in MVP1 could take on credit cards with zero re-training.</p>
+    </section>
+  </div>
+</article>
+
+<div class="closing">
+  <div class="k">Next case study</div>
+  <a href="xma-case-study.html"><span>Tour booking platform</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+</div>
+
+<script>
+  // Vertical spine timeline (Approach section). One continuous accent →
+  // accent-2 gradient runs the full spine; every dot and segment gets a
+  // slice of it sized to its real position, so color never resets at a
+  // boundary. A sequenced sheen travels dot1 → seg1 → dot2 → seg2 → dot3 →
+  // seg3 → dot4, each dot's purple glow firing the instant the preceding
+  // segment's sweep arrives — all computed from real layout since row
+  // heights vary with text length.
+  (function () {
+    const CYCLE = 4;
+    const GRAD_FROM = [94, 106, 210];   // --accent  #5E6AD2
+    const GRAD_TO = [124, 58, 237];     // --accent-2 #7C3AED
+    function lerpColor(t) {
+      const c = GRAD_FROM.map((v, i) => Math.round(v + (GRAD_TO[i] - v) * t));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    function layoutVsTimeline() {
+      const list = document.getElementById('vsList');
+      if (!list) return;
+      const dots = Array.from(list.querySelectorAll('.vs-dot'));
+      if (dots.length < 2) return;
+      const listRect = list.getBoundingClientRect();
+      const centers = dots.map(d => {
+        const r = d.getBoundingClientRect();
+        return (r.top + r.height / 2) - listRect.top;
+      });
+      const spineTop = centers[0], spineBottom = centers[centers.length - 1];
+      const fracOf = (y) => (y - spineTop) / (spineBottom - spineTop);
+
+      dots.forEach((dot, i) => { dot.style.background = lerpColor(fracOf(centers[i])); });
+
+      // Reserve the tail of the cycle as a pause before it loops; split
+      // what's left into one slot per dot (its flash + the segment after).
+      const pauseFrac = 0.22;
+      const activeFrac = 1 - pauseFrac;
+      const slot = activeFrac / dots.length;
+      // vseg-sheen's own keyframes finish the travel at the 15% mark of
+      // its CYCLE-long animation — the next dot must flash at that exact
+      // instant, not an independently-computed slot time, or it visibly lags.
+      const sweepTravelFrac = 0.15;
+
+      dots[0].style.animationDelay = '0s';
+
+      for (let i = 0; i < dots.length - 1; i++) {
+        const seg = document.getElementById('vsSeg' + i);
+        seg.style.top = centers[i] + 'px';
+        seg.style.height = (centers[i + 1] - centers[i]) + 'px';
+        seg.style.background = `linear-gradient(180deg, ${lerpColor(fracOf(centers[i]))}, ${lerpColor(fracOf(centers[i + 1]))})`;
+        const segStart = (i + 0.05) * slot * CYCLE;
+        seg.querySelector('.sweep').style.animationDelay = `-${(CYCLE - segStart).toFixed(2)}s`;
+
+        const dotStart = segStart + sweepTravelFrac * CYCLE;
+        dots[i + 1].style.animationDelay = `-${(CYCLE - dotStart).toFixed(2)}s`;
+      }
+    }
+    layoutVsTimeline();
+    window.addEventListener('load', layoutVsTimeline);
+    window.addEventListener('resize', layoutVsTimeline);
+  })();
+
+  // Old-process horizontal timelines (Context breakout). Two independent
+  // rows — one per product/visit-step — each literally the vertical
+  // spine's algorithm rotated: 3 dots, 2 segments, one accent→accent-2
+  // gradient per row, a sheen chained dot→seg→dot→seg→dot. Because every
+  // connector lives inside its own row, it only ever travels between two
+  // dots in that same row and can never cross another row's text — the
+  // earlier swimlane version's cross-lane diagonals could. Below 640px
+  // this is display:none (.op-mobile takes over), so layout bails out
+  // early rather than positioning invisible, zero-sized elements.
+  (function () {
+    const diagram = document.getElementById('opDiagram');
+    const rows = [document.getElementById('opRow0'), document.getElementById('opRow1')];
+    if (!diagram || rows.some(r => !r)) return;
+    const rowCards = Array.from(document.querySelectorAll('.op-row-card'));
+    if (rowCards.length !== rows.length) return;
+
+    const CYCLE_PER_ROW = 5;              // internal reference for spacing dots within one row's own phase
+    const PILL_TRAVEL_SEC = 1.1;          // matches the hero .tag chip-sheen's own travel time
+    const LINE_TRAVEL_SEC = 0.15 * CYCLE_PER_ROW;   // 0.75s, same absolute speed as before
+    const GLOW_PEAK_SEC = 0.015 * CYCLE_PER_ROW;    // 0.075s
+    const GLOW_FINISH_SEC = 0.11 * CYCLE_PER_ROW;   // 0.55s
+    const pauseFrac = 0.22;
+    const PAUSE_SEC = 2.4;                // breathing room before the 4-phase sequence repeats
+
+    const GRAD_FROM = [94, 106, 210];   // --accent  #5E6AD2
+    const GRAD_TO = [124, 58, 237];     // --accent-2 #7C3AED
+    function lerpColor(t) {
+      const c = GRAD_FROM.map((v, i) => Math.round(v + (GRAD_TO[i] - v) * t));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    // Build one real segment element per gap between consecutive dots
+    // (dots.length - 1 of them), each with its own sweep child.
+    const rowData = rows.map(row => {
+      const dots = Array.from(row.querySelectorAll('.op-dot'));
+      const segs = Array.from({ length: dots.length - 1 }, () => {
+        const el = document.createElement('div');
+        el.className = 'op-h-seg';
+        const sweep = document.createElement('div');
+        sweep.className = 'sweep-x';
+        el.appendChild(sweep);
+        row.appendChild(el);
+        return el;
+      });
+      return { row, dots, segs };
+    });
+    const pillData = rowCards.map(card => Array.from(card.querySelectorAll('.op-row-tag')));
+
+    // A row's own internal dot/segment schedule, in seconds relative to
+    // that row's OWN phase start (t=0 = its first dot flashing).
+    function computeTimelineSchedule(dotCount) {
+      const slot = (1 - pauseFrac) * CYCLE_PER_ROW / dotCount;
+      const dotStarts = [0];
+      const segStarts = [];
+      for (let i = 0; i < dotCount - 1; i++) {
+        const segStart = (i + 0.05) * slot;
+        segStarts.push(segStart);
+        dotStarts.push(segStart + LINE_TRAVEL_SEC);
+      }
+      const duration = dotStarts[dotStarts.length - 1] + GLOW_FINISH_SEC;
+      return { dotStarts, segStarts, duration };
+    }
+
+    let keyframeStyle = document.getElementById('opDynamicKeyframes');
+    if (!keyframeStyle) {
+      keyframeStyle = document.createElement('style');
+      keyframeStyle.id = 'opDynamicKeyframes';
+      document.head.appendChild(keyframeStyle);
+    }
+
+    function layoutOldProcess() {
+      if (getComputedStyle(diagram).display === 'none') return;
+
+      // ---- Chain the 4 phases: pills(row1) → timeline(row1) →
+      // pills(row2) → timeline(row2) — each starts where the last ends. ----
+      let t = 0;
+      const phases = rowData.map(({ dots }, i) => {
+        const pillsStart = t;
+        const pillCount = pillData[i].length;
+        t = pillsStart + (pillCount > 0 ? (pillCount - 1) * PILL_TRAVEL_SEC + PILL_TRAVEL_SEC : 0);
+        const timelineStart = t;
+        const schedule = computeTimelineSchedule(dots.length);
+        t = timelineStart + schedule.duration;
+        return { pillsStart, timelineStart, schedule };
+      });
+      const MASTER_CYCLE = t + PAUSE_SEC;
+      const pct = sec => (sec / MASTER_CYCLE * 100).toFixed(4);
+
+      // Inject @keyframes sized exactly to MASTER_CYCLE — computed here,
+      // not hand-matched, so the CSS percentages can never drift out of
+      // sync with the JS-computed delays below.
+      keyframeStyle.textContent = `
+        @keyframes op-pill-sweep-master{0%{transform:translateX(-130%)}${pct(PILL_TRAVEL_SEC)}%{transform:translateX(130%)}100%{transform:translateX(130%)}}
+        @keyframes op-line-sweep-master{0%{transform:translateX(-130%)}${pct(LINE_TRAVEL_SEC)}%{transform:translateX(130%)}100%{transform:translateX(130%)}}
+        @keyframes op-dot-glow-master{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}${pct(GLOW_PEAK_SEC)}%{box-shadow:0 0 6px 0 rgba(124,58,237,.9),0 0 14px 2px rgba(124,58,237,.55)}${pct(GLOW_FINISH_SEC)}%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+        .op-row-card .op-row-tag::after{animation:op-pill-sweep-master ${MASTER_CYCLE.toFixed(3)}s ease-in-out infinite;animation-delay:var(--sheen-delay);animation-fill-mode:backwards}
+        .op-h-seg .sweep-x{animation:op-line-sweep-master ${MASTER_CYCLE.toFixed(3)}s ease-in-out infinite;animation-fill-mode:backwards}
+        .op-dot{animation:op-dot-glow-master ${MASTER_CYCLE.toFixed(3)}s ease-in-out infinite;animation-fill-mode:backwards}
+      `;
+
+      // ---- Pill delays ----
+      pillData.forEach((pills, i) => {
+        const pillsStart = phases[i].pillsStart;
+        pills.forEach((pill, pi) => {
+          const start = pillsStart + pi * PILL_TRAVEL_SEC;
+          pill.style.setProperty('--sheen-delay', `-${(MASTER_CYCLE - start).toFixed(3)}s`);
+        });
+      });
+
+      // ---- Geometry, colors, dot/segment delays ----
+      rowData.forEach(({ row, dots, segs }, i) => {
+        const rowRect = row.getBoundingClientRect();
+        const centers = dots.map(d => {
+          const r = d.getBoundingClientRect();
+          return (r.left + r.width / 2) - rowRect.left;
+        });
+        const dotY = dots[0].getBoundingClientRect().top - rowRect.top + dots[0].offsetHeight / 2;
+        const spineStart = centers[0], spineEnd = centers[centers.length - 1];
+        const fracOf = x => (x - spineStart) / (spineEnd - spineStart);
+        dots.forEach((d, di) => { d.style.background = lerpColor(fracOf(centers[di])); });
+
+        const { timelineStart, schedule } = phases[i];
+        dots.forEach((d, di) => {
+          const start = timelineStart + schedule.dotStarts[di];
+          d.style.animationDelay = `-${(MASTER_CYCLE - start).toFixed(3)}s`;
+        });
+
+        for (let si = 0; si < segs.length; si++) {
+          const seg = segs[si];
+          seg.style.left = centers[si] + 'px';
+          seg.style.top = dotY + 'px';
+          seg.style.width = (centers[si + 1] - centers[si]) + 'px';
+          seg.style.background = `linear-gradient(90deg, ${lerpColor(fracOf(centers[si]))}, ${lerpColor(fracOf(centers[si + 1]))})`;
+          const start = timelineStart + schedule.segStarts[si];
+          seg.querySelector('.sweep-x').style.animationDelay = `-${(MASTER_CYCLE - start).toFixed(3)}s`;
+        }
+      });
+    }
+    layoutOldProcess();
+    window.addEventListener('load', layoutOldProcess);
+    window.addEventListener('resize', layoutOldProcess);
+  })();
+
+  // Impact stat cards — CSS grid only equalizes height within a single
+  // row, so with 4 cards across 2 rows the shorter row's cards were
+  // stretched to match their own row-mate but not the other row,
+  // leaving mismatched sizes and uneven bottom padding. Measure each
+  // card's natural (content-driven) height and apply the tallest to all
+  // four, so every card is identically sized regardless of row.
+  (function () {
+    const cards = Array.from(document.querySelectorAll('#impact .stat-line-item'));
+    if (!cards.length) return;
+    function equalizeStatCards() {
+      cards.forEach(c => { c.style.height = 'auto'; });
+      const maxH = Math.max(...cards.map(c => c.getBoundingClientRect().height));
+      cards.forEach(c => { c.style.height = maxH + 'px'; });
+    }
+    equalizeStatCards();
+    window.addEventListener('load', equalizeStatCards);
+    window.addEventListener('resize', equalizeStatCards);
+  })();
+</script>
+
+<script>
+  (function () {
+    const GATE_KEY = 'td-case-study-unlocked';
+    const gate = document.getElementById('pwGate');
+    const form = document.getElementById('pwForm');
+    const input = document.getElementById('pwInput');
+    const error = document.getElementById('pwError');
+
+    function unlock() {
+      document.body.classList.remove('locked');
+      gate.style.display = 'none';
+    }
+
+    if (sessionStorage.getItem(GATE_KEY) === '1') {
+      unlock();
+    } else {
+      input.focus();
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (input.value === 'rodriguez') {
+        sessionStorage.setItem(GATE_KEY, '1');
+        unlock();
+      } else {
+        error.classList.add('show');
+        input.value = '';
+        input.focus();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
