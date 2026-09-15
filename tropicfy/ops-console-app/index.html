@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ops console app — Tropicfy</title>
+<meta name="description" content="The system that protects Tropicfy's profit margin and replaces the operation's manual processes — profitable tours went from 0 to 30.">
+<link rel="icon" href="/media/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="/media/favicon/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/media/favicon/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/media/favicon/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ops console app — Tropicfy">
+<meta property="og:description" content="The system that protects Tropicfy's profit margin and replaces the operation's manual processes — profitable tours went from 0 to 30.">
+<meta property="og:url" content="https://chrisrodriguez.design/tropicfy/ops-console-app/">
+<meta property="og:image" content="https://chrisrodriguez.design/media/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ops console app — Tropicfy">
+<meta name="twitter:description" content="The system that protects Tropicfy's profit margin and replaces the operation's manual processes — profitable tours went from 0 to 30.">
+<meta name="twitter:image" content="https://chrisrodriguez.design/media/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050506; --bg-alt:#0D0D11; --bg-elevated:#0A0A0C; --bg-elevated-2:#111114;
+    --surface:rgba(255,255,255,.045); --border:rgba(255,255,255,.1); --border-strong:rgba(255,255,255,.16);
+    --ink:#EDEDEF; --muted:#8A8F98; --muted-2:#828894; --prose:#9AA0AA;
+    --accent:#5E6AD2; --accent-2:#7C3AED; --accent-2-text:#A78BFA; --success:#3DD68C; --success-bg:rgba(61,214,140,.13); --danger:#FF453A;
+    --font:'Archivo',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(.16,1,.3,1); --r:16px; --r-sm:10px; --r-pill:999px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .col{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  /* Reading measure: prose stays near 70 characters a line while tables,
+     cards and screens use the full column. The contrast is the layout. */
+  .art-section > .eyebrow,
+  .art-section > h2,
+  .art-section > h3,
+  .art-section > blockquote{max-width:720px}
+  /* Prose runs narrower than the headings: 640px keeps it near 77 characters
+     a line at 19px, the top of the comfortable range. */
+  .art-section > p,
+  .art-section > ul,
+  .art-section > ol{max-width:640px}
+  .art-section > p.lede{max-width:760px}
+  .glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+  .g1{width:520px;height:520px;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.14;top:-160px;right:-100px}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,5,6,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+  .nav-in{max-width:1280px;margin:0 auto;padding:20px clamp(20px,4vw,56px);display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700;font-size:15.5px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+  .back-link{font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color 200ms var(--ease)}
+  .back-link:hover{color:var(--ink)}
+  .back-link .bl-short{display:none}
+  @media (max-width:480px){ .back-link .bl-full{display:none} .back-link .bl-short{display:inline} }
+
+
+  /* ============ CASE HEADER (from Template A) ============ */
+  .case-header{padding:150px 0 64px;overflow:hidden;position:relative;border-bottom:1px solid var(--border)}
+  /* Discipline chip sheen — same staggered sweep as the homepage Work cards. */
+  .tag{position:relative;overflow:hidden;display:inline-block;font-size:12.5px;font-weight:600;color:var(--accent-2-text);background:rgba(124,58,237,.14);border-radius:6px;padding:5px 10px;margin-right:8px;margin-bottom:20px;--sheen-delay:0s}
+  .tag::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.4) 48%,rgba(255,255,255,.4) 52%,transparent 65%);transform:translateX(-130%);animation:chip-sheen 5.5s ease-in-out infinite;animation-delay:var(--sheen-delay)}
+  @keyframes chip-sheen{0%,18%{transform:translateX(-130%)}38%,100%{transform:translateX(130%)}}
+  .case-header h1{font-weight:800;font-size:clamp(40px,6vw,80px);letter-spacing:-.025em;line-height:1.05;max-width:16ch;margin-bottom:44px;position:relative;z-index:2}
+  .meta-block{padding-top:24px;border-top:1px solid var(--border);position:relative;z-index:2}
+  /* Each label sits a fixed distance after the divider (row gap); the row's
+     leftover width is shared equally as trailing space at the end of each
+     column, before its divider (flex-grow 1 over a content-sized basis).
+     space-between did the opposite — the divider hugged the previous text
+     and all the slack landed after it, pushing labels away from their own
+     divider. */
+  .meta-row{display:flex;flex-wrap:nowrap;gap:12px 24px}
+  .meta-row:not(:last-child){margin-bottom:20px}
+  .meta-item{flex:1 1 auto;min-width:0;padding:0 24px 8px 0;border-right:1px solid var(--border)}
+  .meta-item:last-child{border-right:none;padding-right:0}
+  .meta-item .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);margin-bottom:6px}
+  .meta-item .v{font-size:15px;font-weight:700}
+  .cover{aspect-ratio:16/8;margin-top:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted-2);background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;overflow:hidden}
+  .cover svg{width:30px;height:30px;opacity:.5}
+  .cover span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.5}
+  .cover img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ============ ARTICLE BODY (from Template B) ============ */
+  .article{padding:64px 0 90px}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:14px}
+  .lede{font-size:24px;line-height:1.5;font-weight:500;color:var(--ink);margin:0}
+  .art-section{margin-bottom:64px}
+  /* Coded prototype: the daily check as three chained steps. */
+  .dc-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:36px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm)}
+  .dc-step{position:relative;padding:22px 24px 24px}
+  .dc-step + .dc-step{border-left:1px solid var(--border)}
+  .dc-step .t{font:600 12px/1 var(--mono);color:var(--muted);margin-bottom:12px}
+  .dc-step .h{font-size:17px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px}
+  .dc-step .d{font-size:15px;line-height:1.55;color:var(--prose)}
+  .dc-step + .dc-step::before{content:"→";position:absolute;left:-11px;top:20px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--bg);border:1px solid var(--border);font-size:12px;color:var(--accent-2-text)}
+  @media (max-width:760px){ .dc-flow{grid-template-columns:1fr} .dc-step + .dc-step{border-left:none;border-top:1px solid var(--border)} .dc-step + .dc-step::before{content:"↓";left:24px;top:-11px} }
+  .art-section:last-child{margin-bottom:0}
+  .art-section h2{font-weight:800;font-size:clamp(28px,3.4vw,40px);line-height:1.15;letter-spacing:-.025em;margin-bottom:20px}
+  /* A third level for long sections: reads as a signpost, not a shout. */
+  .art-section h3{font-size:20px;font-weight:700;line-height:1.35;letter-spacing:-.015em;color:var(--ink);margin:34px 0 10px}
+  .art-section h3:first-of-type{margin-top:26px}
+  .art-section p{font-size:19px;line-height:1.7;color:var(--prose);margin-bottom:20px}
+  .art-section p strong{color:var(--ink)}
+  /* Paragraphs carry only a bottom margin, so the one that follows a table or
+     a card grid sat flush against it. Give it the same air the block above
+     takes for itself. */
+  .art-section table + p,
+  .art-section .stat-line + p,
+  .art-section .decision-grid + p{margin-top:22px}
+  .art-section p.lede{font-size:24px;line-height:1.5;font-weight:500;color:var(--ink);margin:0}
+
+  .pull-quote{border-left:2.5px solid var(--accent-2-text);padding:4px 0 4px 26px;margin:44px 0;font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1.4;color:var(--ink)}
+  .pull-quote cite{display:block;font-style:normal;font-size:13px;font-weight:500;color:var(--muted-2);margin-top:12px}
+
+  /* Vertical spine timeline — a continuous accent→accent-2 gradient runs
+     the full length via three real segments (never a single element,
+     since the line must end exactly at the last dot and each segment's
+     sweep must sync to the dot it arrives at). A sequenced sheen travels
+     dot1 → seg1 → dot2 → seg2 → dot3 → seg3 → dot4, each dot flashing a
+     purple glow (matching the hero role-rotator dot) the instant the
+     preceding segment's sweep reaches it. Positions/timing are computed
+     in JS from real layout — row heights vary with text length. */
+  .vs-list{position:relative;padding-left:48px;margin-top:36px}
+  .vs-line-seg{position:absolute;left:13px;width:3px;border-radius:2px;overflow:hidden;z-index:0}
+  .vs-line-seg .sweep{position:absolute;inset:0;background:linear-gradient(200deg,transparent 35%,rgba(255,255,255,.75) 48%,rgba(255,255,255,.75) 52%,transparent 65%);animation:vseg-sheen 4s ease-in-out infinite;animation-fill-mode:backwards}
+  @keyframes vseg-sheen{0%{transform:translateY(-130%)}15%{transform:translateY(130%)}100%{transform:translateY(130%)}}
+  .vs-row{position:relative;padding-bottom:36px}
+  .vs-row:last-child{padding-bottom:0}
+  .vs-dot{position:absolute;left:-48px;top:-3px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:14px;color:#fff;z-index:1;animation:dot-glow-blink 4s ease-in-out infinite;animation-fill-mode:backwards}
+  @keyframes dot-glow-blink{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}1.5%{box-shadow:0 0 6px 0 rgba(124,58,237,.9),0 0 14px 2px rgba(124,58,237,.55)}11%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+  .vs-row h4{font-size:14.5px;font-weight:700;margin:0}
+  .vs-row p{font-size:13.5px;color:var(--muted);margin:6px 0 0}
+
+  .breakout{margin:64px calc(50% - 50vw);width:100vw;aspect-ratio:16/8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted-2);background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  /* No .breakout svg / .breakout span rules here on purpose. Every
+     .breakout on this page holds real built content (anatomy-breakout,
+     confirm-breakout, final-breakout, ph-breakout) instead of the
+     placeholder icon+label it originally had, so a generic "any svg/span
+     inside a .breakout" selector has nothing legitimate left to target — it would
+     only ever silently reach into unrelated nested icons/labels and mess
+     with their opacity/size/case, which is exactly what happened here
+     more than once. If a real placeholder breakout is ever reintroduced,
+     scope its rule to a dedicated class (e.g. .breakout-placeholder svg)
+     instead of resurrecting the bare-tag descendant selector. */
+
+  /* Confirmation-moment breakout — full-bleed like the other breakouts.
+     The screenshot (a portrait app screen, not a wide banner) sits left
+     with 3 numbered pins on the regions called out in the Design
+     Decisions text; a matching numbered legend stacks to its right. */
+  .breakout.confirm-breakout{aspect-ratio:auto;display:block;padding:64px 0}
+  .confirm-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .confirm-row{display:flex;align-items:center;gap:56px;justify-content:center}
+  .confirm-shot{position:relative;width:520px;max-width:100%;flex-shrink:0;border-radius:8px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  /* This product is mobile-first, so the annotated shot is a phone screen —
+     narrower than the desktop capture the pattern was built for, or it
+     towers over the legend beside it. */
+  .confirm-shot.phone{width:360px}
+  .confirm-shot img{display:block;width:100%;height:auto}
+  .confirm-pin{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--accent-2);color:#fff;font-family:var(--font);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(124,58,237,.32);transform:translate(-50%,-50%)}
+  /* Hover or focus a pin to see which design decision it marks. Pins near the
+     left edge align the label to their start so the phone screen doesn't clip it. */
+  .devices-breakout .confirm-pin{cursor:default;outline:none}
+  .devices-breakout .confirm-pin:hover,.devices-breakout .confirm-pin:focus-visible{z-index:3}
+  .devices-breakout .confirm-pin:focus-visible{box-shadow:0 0 0 4px rgba(124,58,237,.32),0 0 0 6px var(--accent-2-text)}
+  .devices-breakout .confirm-pin::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translate(-50%,4px);white-space:nowrap;padding:7px 10px;border-radius:7px;background:rgba(10,10,12,.8);color:var(--ink);font:600 12.5px/1.2 var(--font);letter-spacing:0;box-shadow:0 0 0 1px var(--border-strong),0 8px 20px -6px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .18s var(--ease),transform .18s var(--ease)}
+  .devices-breakout .confirm-pin[data-align="start"]::after{left:-6px;transform:translate(0,4px)}
+  .devices-breakout .confirm-pin:hover::after,.devices-breakout .confirm-pin:focus-visible::after{opacity:1;transform:translate(-50%,0)}
+  .devices-breakout .confirm-pin[data-align="start"]:hover::after,.devices-breakout .confirm-pin[data-align="start"]:focus-visible::after{transform:translate(0,0)}
+  .confirm-legend{display:flex;flex-direction:column;gap:14px;max-width:320px}
+  .confirm-legend-tag{display:flex;gap:12px;align-items:center;font-size:13px;font-weight:700;color:#fff;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px}
+  .confirm-legend .cl-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px}
+  .confirm-legend .cl-num{width:24px;height:24px;border-radius:50%;background:rgba(124,58,237,.18);color:var(--accent-2-text);font-weight:800;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .confirm-legend .cl-num svg{width:14px;height:14px}
+  .confirm-legend h5{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px}
+  .confirm-legend p{font-size:12px;color:var(--muted);line-height:1.5}
+  @media (max-width:960px){ .confirm-row{flex-direction:column} .confirm-legend{max-width:520px;width:100%} }
+
+  /* Final designs breakout — 4 equal columns filling the wide wrap, no
+     scrolling. The 4 shipped screens have wildly different native aspect
+     ratios (one is a very tall scrolling form, one is nearly square), so
+     every frame is cropped to the same portrait ratio via object-fit:cover
+     rather than hand-picked crop coordinates — the browser handles it
+     responsively. */
+  .breakout.final-breakout{aspect-ratio:auto;display:block;padding:56px 0}
+  .final-wrap{max-width:1920px;margin:0 auto;padding:0 3vw}
+  .final-carousel{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
+  .final-carousel .fc-frame{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+  .final-carousel .fc-frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+  .final-carousel .fc-cap{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.5}
+  .final-carousel .fc-cap b{color:#fff;display:block;font-size:14px;margin-bottom:3px}
+  @media (max-width:900px){ .final-carousel{grid-template-columns:1fr 1fr} }
+  @media (max-width:560px){ .final-carousel{grid-template-columns:1fr} }
+
+  /* Console screens — three phone captures in one row, each inside an
+     iPhone 17 frame, so the two-tab structure reads without being explained. */
+  .breakout.screens-breakout{aspect-ratio:auto;display:block;padding:56px 0 64px}
+  .screens-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .screens-row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:start}
+  /* Each cell is the size container, so every frame measurement below is a
+     share of the phone's own width (cqw) and the device scales as one piece
+     at 3-, 2- or 1-up. Proportions come from the real iPhone 17: 71.5mm body
+     around a 1206x2622 display, ~2.4mm of glass per side, concentric corners
+     (body radius = screen radius + bezel). The aluminium band is a box-shadow
+     ring so it sits outside layout; the drop shadow's negative spread keeps
+     it inside the 28px gap instead of spilling onto the next phone. */
+  .screens-row .sc-cell{container-type:inline-size;min-width:0}
+  .iphone{position:relative;background:#050506;border-radius:15.4cqw;padding:2.4cqw;box-shadow:0 0 0 1.1cqw #dfe1e6,0 0 0 calc(1.1cqw + 1px) rgba(0,0,0,.35),0 26px 42px -16px rgba(0,0,0,.9)}
+  /* Side buttons, drawn as hard-stop gradients on one strip per side:
+     left = Action, volume up, volume down; right = side button, Camera Control. */
+  .iphone::before,.iphone::after{content:"";position:absolute;width:.6cqw;border-radius:.6cqw}
+  .iphone::before{left:calc(-1.1cqw - .6cqw);top:17.5%;height:22.5%;background:linear-gradient(#d3d6dc 0 17.78%,transparent 17.78% 31.11%,#d3d6dc 31.11% 62.22%,transparent 62.22% 68.89%,#d3d6dc 68.89% 100%)}
+  .iphone::after{right:calc(-1.1cqw - .6cqw);top:26%;height:35%;background:linear-gradient(#d3d6dc 0 31.43%,transparent 31.43% 82.86%,#d3d6dc 82.86% 100%)}
+  /* Black screen backdrop on purpose: any rounded-corner antialiasing fringe
+     then disappears into the bezel instead of showing as a pale arc. */
+  .iphone-screen{aspect-ratio:1206/2622;border-radius:13cqw;overflow:hidden;display:flex;flex-direction:column;background:#000}
+  /* Status bar in the app header's own navy, so the header reads as running
+     under it the way a real iOS app does — and the Dynamic Island never sits
+     on top of the Guías / Precios pills. */
+  .iphone-status{flex:none;height:14cqw;background:#101828;color:#fff;display:grid;grid-template-columns:1fr 30cqw 1fr;align-items:center}
+  .iphone-status .t{justify-self:center;font:600 4cqw/1 -apple-system,"SF Pro Text",system-ui,sans-serif;letter-spacing:-.01em}
+  .iphone-status .island{height:8.8cqw;border-radius:99px;background:#000}
+  .iphone-status .icons{justify-self:center;display:flex;align-items:center;gap:1.1cqw}
+  .iphone-status .icons svg{display:block;height:2.9cqw;width:auto}
+  .iphone-screen img{flex:1;min-height:0;display:block;width:100%;object-fit:cover;object-position:top center}
+  .screens-row .sc-cap{margin-top:20px;font-size:13.5px;line-height:1.45;color:var(--muted);text-align:center}
+  .screens-row .sc-cap b{color:var(--ink);font-weight:700}
+  @media (max-width:860px){ .screens-row{grid-template-columns:1fr 1fr;gap:28px} }
+  @media (max-width:520px){ .screens-row{grid-template-columns:1fr;gap:36px} }
+
+  /* Promo video — under the throughline. It breaks out of the text column
+     to full width, then takes the header's .wrap measure, so it is exactly
+     as wide as the cover. No band behind it. The navy background matches
+     the video's first frame, so there is no flash before playback starts. */
+  .promo{width:100vw;margin:0 calc(50% - 50vw) 64px}
+  .promo-stage{position:relative}
+  .promo-video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#0D192D;border-radius:var(--r);object-fit:cover}
+  /* Sound toggle. Browsers block audio until the visitor asks for it, so the
+     button is the way in: it stays visible over the video and says what a
+     click will do. */
+  .promo-sound{position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:8px;padding:9px 14px 9px 11px;font:inherit;font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--ink);background:rgba(13,25,45,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(237,237,239,.22);border-radius:var(--r-pill);cursor:pointer;transition:background .18s var(--ease),border-color .18s var(--ease),transform .18s var(--ease)}
+  .promo-sound:hover{background:rgba(13,25,45,.9);border-color:rgba(237,237,239,.45);transform:translateY(-1px)}
+  /* The video starts silent, so the button rings three times once it is
+     actually on screen — enough to be noticed, not enough to nag. The ring
+     is the accent colour: the footage under it can be white or navy, and a
+     light ring would vanish over the light screens. */
+  /* Linear on purpose: with the site's expo easing the ring is gone in under
+     a tenth of a second, which reads as no animation at all. Linear keeps it
+     travelling — and visible — for a full second. */
+  .promo-sound.attract{animation:promo-attract 1.9s linear 3}
+  @keyframes promo-attract{
+    0%{box-shadow:0 0 0 0 rgba(94,106,210,.95);transform:scale(1)}
+    8%{transform:scale(1.08)}
+    26%{transform:scale(1)}
+    55%{box-shadow:0 0 0 20px rgba(94,106,210,0)}
+    100%{box-shadow:0 0 0 0 rgba(94,106,210,0);transform:scale(1)}
+  }
+  .promo-sound:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .promo-sound svg{width:16px;height:16px;flex:none}
+  .promo-sound .ic-on{display:none}
+  .promo-sound[aria-pressed="true"] .ic-on{display:block}
+  .promo-sound[aria-pressed="true"] .ic-off{display:none}
+  /* On touch it becomes a 44px round target — the icon alone, no label. */
+  @media (max-width:520px){ .promo-sound{right:10px;bottom:10px;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%} .promo-sound .promo-sound-label{display:none} }
+
+  /* Outcomes — one panel split by hairlines: the figure first, one line of
+     what it measures, nothing else. */
+  .stat-line{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+  .stat-line-item{padding:30px 28px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .stat-line-item:nth-child(2n){border-right:none}
+  .stat-line-item:nth-last-child(-n+2){border-bottom:none}
+  .stat-line-item .val{font-size:clamp(30px,3.6vw,42px);line-height:1.05;font-weight:800;letter-spacing:-.035em;color:var(--success)}
+  .stat-line-item .val .arrow{margin:0 .1em;opacity:.55;font-weight:600}
+  .stat-line-item .val .before{color:rgba(61,214,140,.5)}
+  .stat-line-item .lbl{margin-top:14px;font-size:16px;line-height:1.55;font-weight:500;color:var(--muted)}
+  @media (max-width:560px){
+    .stat-line{grid-template-columns:1fr}
+    .stat-line-item{border-right:none}
+    .stat-line-item:nth-last-child(-n+2){border-bottom:1px solid var(--border)}
+    .stat-line-item:last-child{border-bottom:none}
+  }
+
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .info-grid .lbl{display:flex;align-items:center;gap:8px}
+  .info-grid .lbl svg{width:18px;height:18px;flex-shrink:0;color:var(--success)}
+  @media (max-width:700px){ .info-grid{grid-template-columns:1fr} }
+
+  /* Design decisions — 3 cards, 2-up then 1, all the same size (reuses
+     .info-grid's layout); the 3rd is "featured" via a tinted background,
+     not a different size. */
+  .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  .decision-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:24px;display:flex;gap:16px;align-items:flex-start}
+  .decision-card .dc-icon{width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.14);color:var(--accent-2-text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .decision-card .dc-icon svg{width:19px;height:19px}
+  .decision-card h4{font-size:15px;font-weight:700;margin-bottom:8px}
+  .decision-card p{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0}
+  .decision-card.featured{background:rgba(94,106,210,.16);border-color:rgba(94,106,210,.55)}
+  .decision-card.featured .dc-icon{background:rgba(94,106,210,.3);color:#A9B2E8}
+  @media (max-width:700px){ .decision-grid{grid-template-columns:1fr} }
+
+  /* Design decisions as tabs. Each argument is long, so at desktop width the
+     section shows one at a time. Below 760px a tab strip would push these long
+     labels into a horizontal scroller, so the panels simply stack and nothing
+     stays hidden. */
+  .dd{display:grid;grid-template-columns:minmax(270px,340px) 1fr;margin-top:44px;max-width:640px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+  /* Design decisions as four cards in a row across the full column, each with
+     a small uppercase label, a title and the reasoning. Two columns below
+     1100px, one below 640px. */
+  .dcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:44px}
+  .dcard{display:grid;align-content:start;gap:10px;padding:28px 26px 30px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm)}
+  .dcard-num{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:2px}
+  .art-section .dcard .dcard-title{margin:0;font-size:17px;line-height:1.35}
+  .art-section .dcard p{font-size:15px;line-height:1.65;margin:0}
+  @media (max-width:1100px){ .dcards{grid-template-columns:1fr 1fr} }
+  @media (max-width:640px){ .dcards{grid-template-columns:1fr} }
+  /* Design decisions as a scroll-synced list, at text width (640px): the
+     phone stays put while the decisions scroll past, and switches to the
+     screen and pin of the one being read. Below 860px the phone hides; the
+     screens section right after shows every pin. */
+  .dsy{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:40px;max-width:640px;margin-top:44px}
+  .dsy-steps{display:grid}
+  .dsy-step{min-height:440px;display:grid;align-content:center;gap:8px;padding:24px 0 24px 22px;border-left:2px solid var(--border);opacity:.35;transition:opacity .3s var(--ease),border-color .3s var(--ease)}
+  .dsy-step.on{opacity:1;border-color:var(--accent-2-text)}
+  .dsy-num{font:600 12px/1.9 var(--mono);letter-spacing:.1em;color:var(--accent-2-text)}
+  .art-section .dsy-title{margin:0;font-size:20px;line-height:1.35}
+  .art-section .dsy-step p{font-size:16.5px;line-height:1.65;margin:0}
+  .dsy-sticky{position:sticky;top:calc(50vh - 245px);align-self:start}
+  .dsy-phone{container-type:inline-size}
+  .dsy-shot[hidden]{display:none}
+  .dsy-shot .confirm-pin{opacity:0;transition:opacity .25s var(--ease)}
+  .dsy-shot .confirm-pin.on{opacity:1}
+  @media (max-width:860px){ .dsy{grid-template-columns:1fr} .dsy-sticky{display:none} .dsy-step{min-height:auto;opacity:1;border-color:var(--accent-2-text)} }
+  @media (prefers-reduced-motion:reduce){ .dsy-step,.dsy-shot .confirm-pin{transition:none} }
+  .dd-tabs{display:flex;flex-direction:column;background:var(--bg-elevated-2);border-right:1px solid var(--border)}
+  /* The label carries the number, and the column is wide enough that a title
+     wraps to two balanced lines instead of ragged ones. */
+  .dd-tab{all:unset;cursor:pointer;display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;padding:18px 20px;font-size:16px;font-weight:600;line-height:1.4;text-wrap:balance;color:#9BA1AC;border-bottom:1px solid rgba(255,255,255,.08);position:relative;transition:color .2s var(--ease),background .2s var(--ease)}
+  .dd-tab:last-child{border-bottom:none}
+  .dd-tab:hover{color:var(--ink)}
+  .dd-tab[aria-selected="true"]{color:var(--ink);background:var(--bg-elevated)}
+  .dd-tab[aria-selected="true"]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent)}
+  .dd-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+  .dd-num{font:600 11px/1.75 var(--mono);letter-spacing:.1em;color:var(--accent-2-text);opacity:.6;transition:opacity .2s var(--ease)}
+  .dd-tab[aria-selected="true"] .dd-num{opacity:1}
+  /* The tab already carries the title, so the panel drops it and runs the
+     argument at reading size, with the decision's icon above it. */
+  .dd-panels{display:grid}
+  /* All panels share one grid cell, so the card is as tall as the longest
+     decision and doesn't change height between tabs. Inactive ones stay laid
+     out but invisible (visibility also drops them from the accessibility tree). */
+  .dd-panel{display:grid;grid-area:1/1;gap:20px;align-content:center;justify-items:start;padding:30px 30px 32px}
+  .dd-panel[hidden]{display:grid;visibility:hidden}
+  /* One tile per thing the decision touches — the two margins it ties, the
+     rates it reads, the three ways to reach a guide. */
+  .dd-panel h4{display:none}
+  .dd-panel p{font-size:16px;line-height:1.7;color:var(--muted);max-width:58ch;margin:0}
+  @media (max-width:760px){
+    .dd{grid-template-columns:1fr}
+    .dd-tabs{display:none}
+    .dd-panels{display:block}
+    .dd-panel[hidden]{display:grid;visibility:visible}
+    .dd-panel{grid-template-columns:1fr;gap:12px;align-content:start;padding:22px 20px;border-bottom:1px solid var(--border)}
+    .dd-panel:last-child{border-bottom:none}
+    /* No tabs down here, so each panel gets its title back. */
+    .dd-panel h4{display:block;font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0}
+    .dd-panel p{font-size:14.5px}
+  }
+
+  /* Anatomy of a booking — the arithmetic as an equation, not a stacked
+     bar: the two amber blocks are the guessed inputs, and the red one is
+     the answer nobody could produce. Wraps to a column on mobile, where
+     the operators rotate to keep reading top-to-bottom. */
+  .breakout.anatomy-breakout{aspect-ratio:auto;display:block;padding:56px 0 64px}
+  .anatomy-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .anatomy-eyebrow{font-size:22px;line-height:1.5;font-weight:500;color:var(--muted-2);text-align:center;margin-bottom:44px}
+  .anatomy-eyebrow b{color:var(--accent-2-text);font-weight:700}
+  /* Booking journey — same search-journey timeline pattern as XMA's
+     "every search ends the same way" breakout: one row of icon nodes
+     connected by an animated color-sweep line (see script below), running
+     green → red as the booking moves toward a canceled tour. Six steps
+     instead of four, so columns run narrower and the mobile breakpoint
+     kicks in sooner. */
+  .bj-timeline{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .bj-node{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;min-width:0;padding:0 4px}
+  .bj-h-seg{position:absolute;top:0;height:3px;border-radius:2px;overflow:hidden;z-index:0}
+  .bj-h-seg .sweep-x{position:absolute;inset:0;background:linear-gradient(90deg,transparent 35%,rgba(255,255,255,.75) 48%,rgba(255,255,255,.75) 52%,transparent 65%);animation-fill-mode:backwards}
+  .bj-icon{position:relative;width:48px;height:48px;border-radius:13px;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:3px solid var(--bg-elevated-2);animation-fill-mode:backwards}
+  .bj-icon svg{width:21px;height:21px}
+  .bj-node.warn .bj-icon{background:rgba(245,166,35,.13);color:#E8B76A}
+  .bj-node.bad .bj-icon{background:rgba(255,69,58,.13);color:var(--danger)}
+  .bj-actor{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2)}
+  .bj-node h5{font-size:14px;font-weight:700;line-height:1.4;max-width:140px;color:var(--ink)}
+  .bj-outcome{margin-top:36px;text-align:center;background:rgba(255,69,58,.12);border:1px solid rgba(255,69,58,.3);border-radius:var(--r-sm);padding:16px 20px;font-size:13.5px;font-weight:600;color:var(--ink)}
+  @media (max-width:760px){ .bj-timeline{display:none} }
+  .bj-mobile{display:none}
+  @media (max-width:760px){ .bj-mobile{display:block} }
+  .bj-m-step{display:flex;gap:14px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;margin-bottom:10px}
+  .bj-m-step:last-child{margin-bottom:0}
+  .bj-m-step.warn{background:rgba(245,166,35,.11);border-color:rgba(245,166,35,.35)}
+  .bj-m-step.warn .bj-m-icon{background:rgba(245,166,35,.18);color:#E8B76A}
+  .bj-m-step.bad{background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.3)}
+  .bj-m-icon{width:32px;height:32px;border-radius:9px;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .bj-m-step.bad .bj-m-icon{background:rgba(255,69,58,.18);color:var(--danger)}
+  .bj-m-icon svg{width:16px;height:16px}
+  .bj-m-step .bj-actor{margin-bottom:2px;display:block}
+  .bj-m-step h5{font-size:14px;font-weight:700;color:var(--ink)}
+
+  /* Paired table — carries the argument in four sections where prose would
+     bury it (finding↔decision, defect↔why, seeded data↔state reached,
+     round 1↔round 2). Header row hidden on mobile, where each row stacks
+     into a labelled block instead. */
+  /* Validation: one row per criterion, a bar per round showing how many of the
+     two SMEs met it. Green = met; yellow = met only once prompted. */
+  .vb{display:grid;gap:36px;max-width:640px;margin-top:36px}
+  .vb-row{display:grid;gap:12px}
+  .vb-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:2px}
+  .vb-c{font-size:17px;font-weight:700;line-height:1.4;color:var(--ink)}
+  .vb-chip{flex:none;font-size:12px;font-weight:700;padding:4px 9px;border-radius:6px;line-height:1.3}
+  .vb-chip.ok{color:var(--success);background:rgba(61,214,140,.12)}
+  .vb-chip.partial{color:#E8B76A;background:rgba(232,183,106,.12)}
+  .vb-bar{display:grid;grid-template-columns:64px minmax(0,1fr) 56px;gap:14px;align-items:center}
+  .vb-l{font:600 12px/1 var(--mono);color:var(--muted)}
+  .vb-track{position:relative;height:10px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+  .vb-fill{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--muted-2)}
+  .vb-fill.ok{background:var(--success)}
+  .vb-fill.partial{background:#E8B76A}
+  .vb-v{font-size:14px;color:var(--prose);text-align:right;white-space:nowrap}
+  .vb-note{font-size:15px;color:var(--muted);padding-left:78px}
+  @media (max-width:520px){ .vb-bar{grid-template-columns:56px minmax(0,1fr) 52px;gap:10px} .vb-note{padding-left:66px} }
+  .case-table{width:100%;border-collapse:collapse;margin-top:22px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+  .case-table th{text-align:left;padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--prose);background:var(--bg-elevated-2);border-bottom:1px solid var(--border)}
+  .case-table td{padding:16px 18px;font-size:16px;line-height:1.6;color:var(--muted);border-bottom:1px solid var(--border);vertical-align:top}
+  .case-table tr:last-child td{border-bottom:none}
+  .case-table td b{color:var(--ink);font-weight:700}
+  .case-table td .verdict{font-weight:700;color:var(--success)}
+  .case-table td .verdict.partial{color:#E8B76A}
+  @media (max-width:640px){
+    .case-table,.case-table tbody,.case-table tr,.case-table td{display:block;width:100%}
+    .case-table thead{display:none}
+    .case-table tr{border-bottom:1px solid var(--border);padding:4px 0}
+    .case-table tr:last-child{border-bottom:none}
+    .case-table td{border-bottom:none;padding:9px 18px}
+    .case-table td::before{content:attr(data-l);display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-bottom:5px}
+  }
+
+  /* User personas breakout — same component as XMA's persona cards. The
+     pain-point bars are fixed data, not an ambient loop: they fill from 0 to
+     their value once, when the card scrolls into view (IntersectionObserver
+     below). Values map the journey map's sentiment per step — pain point,
+     friction, neutral, positive — not measured percentages. The avatars are
+     the one continuous loop; each bubble stands for the persona's core trait
+     (a grawlix for "a mess", a clock for "rush or is there time"). */
+  /* Devices — the guide directory on a MacBook Pro. Everything is a share of
+     the container width (cqw), so the machine scales as one piece: bezel,
+     notch, hinge and the light catching the top edge of the lid. */
+  .breakout.devices-breakout{aspect-ratio:auto;display:block;padding:64px 0}
+  .devices-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  /* Two phones side by side: stacked, each one would run over a screen tall. */
+  .devices-row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:start;margin:0 auto}
+  @media (max-width:860px){ .devices-row{grid-template-columns:1fr 1fr} }
+  .devices-row .sc-cell{container-type:inline-size}
+  /* The pins sit over the screenshot, so they need their own positioning box:
+     the image fills it exactly, which makes the percentages mean something. */
+  .sc-shot{position:relative;flex:1;min-height:0}
+  .sc-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+  .devices-row .sc-cap{margin-top:20px;font-size:13.5px;line-height:1.45;color:var(--muted);text-align:center}
+  .devices-row .sc-cap b{color:var(--ink);font-weight:700}
+  @media (max-width:560px){ .devices-row{grid-template-columns:1fr;gap:44px;max-width:340px} }
+  .mbp{container-type:inline-size;max-width:940px;margin:0 auto}
+  .mbp-lid{position:relative;width:92cqw;margin:0 auto;padding:1.05cqw 1.05cqw 1.35cqw;background:linear-gradient(#2b2b2e,#151517);border-radius:1.5cqw 1.5cqw .25cqw .25cqw;box-shadow:inset 0 .09cqw 0 rgba(255,255,255,.22),0 3cqw 5cqw -2cqw rgba(0,0,0,.75)}
+  .mbp-screen{position:relative;aspect-ratio:3024/1964;border-radius:.55cqw;overflow:hidden;background:#0b0b0c}
+  .mbp-screen img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+  /* The notch sits over the picture, like the real one over the menu bar. */
+  .mbp-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:11cqw;height:.85cqw;background:#0b0b0c;border-radius:0 0 .35cqw .35cqw}
+  /* A single soft sweep of light across the glass — enough to read as glass. */
+  .mbp-glare{position:absolute;inset:0;pointer-events:none;background:linear-gradient(102deg,rgba(255,255,255,.07) 0 14%,rgba(255,255,255,0) 38%)}
+  .mbp-base{position:relative;width:100cqw;height:1.55cqw;margin-top:.12cqw;background:linear-gradient(#3a3a3d,#232326 38%,#101012);border-radius:.25cqw .25cqw 1.1cqw 1.1cqw / .25cqw .25cqw 1.6cqw 1.6cqw;box-shadow:0 1.4cqw 2.8cqw -.9cqw rgba(0,0,0,.85)}
+  .mbp-base::before{content:"";position:absolute;top:0;left:50%;width:13cqw;height:.5cqw;margin-left:-6.5cqw;border-radius:0 0 .6cqw .6cqw;background:linear-gradient(#17171a,#26262a)}
+  .devices-breakout .sc-cap{margin-top:26px;font-size:13.5px;line-height:1.45;color:var(--muted);text-align:center}
+  .devices-breakout .sc-cap b{color:var(--ink);font-weight:700}
+  /* Before / after of the two findings, between Validation and Outcomes.
+     Same phone proportion as every other phone on the page; the captures are
+     taller than the screen, so they show from the top. */
+  .breakout.ba-breakout{aspect-ratio:auto;display:block;padding:64px 0}
+  .ba-row{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .ba-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:24px;font-size:15px;line-height:1.4}
+  .ba-head b{color:var(--ink);font-weight:700}
+  .ba-verdict{font-size:13.5px;font-weight:700;color:var(--success)}
+  .ba-verdict.partial{color:#E8B76A}
+  .ba-phones{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  .ba-phones .sc-cell{container-type:inline-size;min-width:0}
+  .ba-phones .sc-cap{margin-top:18px;font-size:13.5px;line-height:1.45;color:var(--muted);text-align:center}
+  .ba-phones .sc-cap b{color:var(--ink);font-weight:700}
+  .ba-phones .sc-cap b{display:block}
+  .ba-note{display:block;margin-top:6px;text-wrap:balance}
+  /* Pins here name the finding (F1, F2): a slightly larger circle fits the label. */
+  .ba-breakout .confirm-pin{width:28px;height:28px;padding:0;border-radius:50%;font-size:11px;letter-spacing:0}
+  /* Let pins near the edge sit over the phone frame instead of being clipped:
+     the screen stops clipping, and its two layers round their own corners. */
+  .ba-breakout .iphone-screen{overflow:visible}
+  .ba-breakout .iphone-status{border-radius:13cqw 13cqw 0 0}
+  .ba-breakout .sc-shot img{border-radius:0 0 13cqw 13cqw}
+  @media (max-width:860px){ .ba-row{grid-template-columns:1fr} }
+  @media (max-width:420px){ .ba-phones{gap:14px} }
+
+  .breakout.persona-breakout{aspect-ratio:auto;display:block;padding:64px 0}
+  .persona-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .persona-eyebrow{font-size:20px;line-height:1.5;font-weight:500;color:var(--muted-2);text-align:center;margin-bottom:40px}
+  .persona-eyebrow b{color:var(--accent-2-text);font-weight:700}
+  .persona-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;margin:24px 0 8px}
+  /* Side by side, each card is a subgrid over the same five rows (head,
+     quote, goals label, goals, pain points), so every row takes the taller
+     card's height: the goals blocks match and the pain points stay aligned
+     without fixed heights. Stacked on mobile there's nothing to align. */
+  .persona-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:28px;display:grid;grid-template-rows:subgrid;grid-row:span 5}
+  @media (max-width:800px){
+    .persona-grid{grid-template-columns:1fr;row-gap:24px}
+    .persona-card{display:flex;flex-direction:column;grid-row:auto}
+  }
+  .persona-motivations{margin-top:auto;padding-top:22px}
+  .persona-motivations .persona-block-label{margin-top:0}
+  .persona-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .persona-avatar{position:relative;width:60px;height:60px;border-radius:50%;background:rgba(124,58,237,.16);flex-shrink:0}
+  .persona-avatar svg.persona-illustration{width:100%;height:100%;display:block}
+  .avatar-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--accent-2-text);opacity:0;animation:avatar-ring-pulse 2.4s ease-out infinite}
+  .avatar-ring.r2{animation-delay:1.2s}
+  @keyframes avatar-ring-pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.65);opacity:0}}
+  .persona-thought{position:absolute;top:-9px;right:-9px;width:34px;height:16px;background:#fff;border-radius:10px;display:flex;gap:3px;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+  .persona-thought::after{content:'';position:absolute;bottom:-4px;left:9px;width:6px;height:6px;background:#fff;border-radius:50%}
+  .persona-thought::before{content:'';position:absolute;bottom:-9px;left:5px;width:3px;height:3px;background:#fff;border-radius:50%}
+  /* Fabio's "a mess": a comic grawlix. Same staggered glyph blink as XMA's
+     music notes, plus a small tilt on each pop so it reads as an outburst. */
+  .persona-thought.grawlix-bubble{gap:0}
+  .grawlix{display:block;font-family:var(--font);font-size:10px;font-weight:800;line-height:1;color:#3a3450;animation:grawlix-pop 1.4s ease-in-out infinite}
+  .grawlix:nth-child(2){animation-delay:.18s}
+  .grawlix:nth-child(3){animation-delay:.36s}
+  @keyframes grawlix-pop{0%,60%,100%{opacity:.55;transform:translateY(0) rotate(0)}30%{opacity:1;transform:translateY(-1.5px) rotate(-10deg)}}
+  .thought-clock{width:11px;height:11px;display:block}
+  .thought-clock .clock-hand{transform-origin:6px 6px;animation:clock-spin 2.4s linear infinite}
+  @keyframes clock-spin{to{transform:rotate(360deg)}}
+  .persona-name{font-size:16px;font-weight:800;color:#fff}
+  .persona-archetype{font-size:12.5px;color:var(--accent-2-text);font-weight:600;margin-top:2px}
+  .persona-quote{font-size:15px;font-style:italic;color:var(--muted);border-left:2px solid var(--border);padding-left:14px;margin-bottom:0;line-height:1.55}
+  .persona-block-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);margin:22px 0 12px}
+  .persona-block-label:first-of-type{margin-top:0}
+  .p-meter{margin-bottom:13px}
+  .p-meter-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted-2);margin-bottom:6px}
+  .p-meter-track{position:relative;height:5px;border-radius:3px;background:rgba(167,139,250,.15);overflow:hidden}
+  .p-meter-fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2-text));width:0;transition:width 1.1s cubic-bezier(.16,1,.3,1)}
+  .persona-card.in-view .p-meter-fill{width:var(--val)}
+  .persona-goals{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+  .persona-goals li{font-size:15px;color:var(--muted);line-height:1.5;padding-left:16px;position:relative}
+  .persona-goals li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;background:var(--accent-2-text)}
+  @media (prefers-reduced-motion:reduce){
+    .avatar-ring,.thought-clock .clock-hand{animation:none}
+    .grawlix{animation:none;opacity:1}
+    .p-meter-fill{transition:none;width:var(--val)}
+  }
+
+  /* Placeholder breakout — a visual that is specified but not yet produced.
+     Deliberately looks unfinished so it can't ship unnoticed. */
+  .breakout.ph-breakout{aspect-ratio:auto;display:block;padding:56px 0}
+  .ph-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  .ph-box{border:1.5px dashed var(--border-strong);border-radius:var(--r);padding:64px 32px;text-align:center;background:rgba(255,255,255,.02)}
+  .ph-box svg{width:26px;height:26px;color:var(--muted-2);opacity:.6}
+  .ph-box .ph-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:12px}
+  .ph-box .ph-desc{font-size:14px;color:var(--muted);margin-top:10px;max-width:52ch;margin-left:auto;margin-right:auto;line-height:1.6}
+
+  .closing{padding:80px clamp(20px,4vw,40px) 120px;text-align:center}
+  .closing .k{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-2-text);margin-bottom:10px}
+  .closing a{font-weight:800;font-size:clamp(24px,3.4vw,38px);text-decoration:none;display:inline-flex;align-items:center;gap:12px;letter-spacing:-.02em;max-width:100%}
+  .closing a span{min-width:0}
+  .closing-break{display:none}
+  @media (max-width:640px){ .closing-break{display:inline} }
+  .closing a svg{width:26px;height:26px;flex-shrink:0;transition:transform 200ms var(--ease)}
+  .closing a:hover svg{transform:translate(4px,-4px)}
+
+  @media (max-width:640px){
+    .meta-row{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:22px}
+    .meta-item{border-right:none;padding:0}
+    .meta-item:nth-child(odd){border-right:1px solid var(--border);padding-right:16px}
+    .lede{font-size:19px}
+    .pull-quote{font-size:20px}
+  }
+
+  /* Role strip — what I actually did, readable in three seconds. */
+  .role-row{display:grid;grid-template-columns:repeat(3,1fr);margin:26px 0 4px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+  .role-item{padding:22px 24px;border-right:1px solid var(--border)}
+  .role-item:last-child{border-right:none}
+  .role-item .r-k{font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:10px}
+  .role-item .r-v{font-size:15.5px;line-height:1.55;color:var(--prose)}
+  @media (max-width:700px){ .role-row{grid-template-columns:1fr} .role-item{border-right:none;border-bottom:1px solid var(--border)} .role-item:last-child{border-bottom:none} }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="/">Chris Rodriguez</a>
+    <a class="back-link" href="/#work"><span class="bl-full">← Back to work</span><span class="bl-short">← Work</span></a>
+  </div>
+</nav>
+
+<header class="case-header">
+  <div class="glow g1" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="tag" style="--sheen-delay:0s">Tropicfy</span><span class="tag" style="--sheen-delay:1.1s">Product Design</span>
+    <h1>Ops console app</h1>
+    <div class="meta-block">
+      <div class="meta-row">
+        <div class="meta-item"><div class="k">Platform</div><div class="v">Mobile-first web app</div></div>
+        <div class="meta-item wide"><div class="k">Role</div><div class="v">Solo PM, Product Designer, AI-Native Engineering</div></div>
+        <div class="meta-item"><div class="k">Culture</div><div class="v">AI-first, Prototype-first</div></div>
+        <div class="meta-item wide-sm"><div class="k">Stack</div><div class="v">Next.js, GitHub, Supabase, Vercel</div></div>
+        <div class="meta-item"><div class="k">Timeline</div><div class="v">4 weeks</div></div>
+      </div>
+    </div>
+    <div class="cover">
+      <img src="/media/ops-console-featured.png?v=2" alt="Ops Console — internal operations platform for Tropicfy, showing a tour's single guide payment and its price breakdown on mobile">
+    </div>
+  </div>
+</header>
+
+<article class="article">
+  <div class="col">
+    <section class="art-section" id="throughline">
+      <p class="lede">Profitable tours went from 0 to 30. The Ops console prices every Tropicfy tour from its real cost, sets a single payment per guide, and replaces the operation's manual processes. I owned the product, design, and production build — AI-first with Claude, in four weeks.</p>
+    </section>
+
+
+
+
+<div class="promo">
+      <div class="wrap">
+        <div class="promo-stage">
+          <video class="promo-video" id="promoVideo" src="/media/ops-console-promo.mp4?v=3" poster="/media/ops-console-promo-still.jpg" muted loop playsinline preload="auto" aria-label="Ops Console promo — the guide and pricing screens on mobile, narrated: at Tropicfy, no one knew what a tour cost. Every guide charged their own rate, so the margin was whatever was left. Ops Console does it the other way: real cost first, then the price. What to pay, what to charge, how to reach the guide. Now the whole operation runs from one place, and it makes money."></video>
+          <button type="button" class="promo-sound" id="promoSound" aria-pressed="false" aria-label="Turn the sound on">
+            <svg class="ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6.5a7.7 7.7 0 0 1 0 11"/></svg>
+            <svg class="ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 10l4 4"/><path d="M20 10l-4 4"/></svg>
+            <span class="promo-sound-label">Sound</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+        <section class="art-section" id="problem">
+      <div class="eyebrow">The problem</div>
+      <h2>Nobody knew what a tour cost.</h2>
+      <p>At Tropicfy every tour is run by an independent guide, not staff, and each one names their own rate when a booking comes in. The customer's price came from the same blind spot: set from experience, not from real cost.</p>
+
+      <h3>First it cost money. Then it cost time.</h3>
+      <p>Without real fixed costs behind the price, the business lost money. When the loss was big enough, the tour was canceled — and a bad review came with it.</p>
+      <p>The missing system cost time too. Every booking assignment carried a calculation in the middle to decide whether the tour was worth operating.</p>
+    
+
+
+      <blockquote class="pull-quote">
+        "How do I price a tour when its cost is a different number for every guide?"
+      </blockquote>
+    </section>
+
+    <section class="art-section" id="solution">
+      <div class="eyebrow">The solution</div>
+      <h2>First the cost. Then the price.</h2>
+      <p>The fix started with a sibling guide-facing micro-app I built as a project of its own, to collect, in a structured way, what every guide charges to operate Tropicfy's tours.</p>
+      <p>The console averages those rates into one fixed payment per tour and modality, and prices each tour from that cost. Finding a guide, reaching them and knowing what to pay now happen in one place.</p>
+    </section>
+
+<div class="breakout anatomy-breakout">
+      <div class="anatomy-wrap">
+        <div class="anatomy-eyebrow">Anatomy of a booking, <b>before this console</b></div>
+
+        <div class="bj-timeline" id="bjRow">
+          <div class="bj-node bad">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11.59 4.41A2 2 0 0 0 10.17 3.83L4 3.7a1 1 0 0 0-1.02 1.02l.13 6.17a2 2 0 0 0 .58 1.42l9 9a2 2 0 0 0 2.83 0l4.9-4.9a2 2 0 0 0 .07-2.9Z"/><circle cx="7.5" cy="8.5" r="1"/></svg></div>
+            <div class="bj-actor">Pricing</div>
+            <h5>Set from experience, not cost</h5>
+          </div>
+          <div class="bj-node">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.75A1.75 1.75 0 0 1 4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v10.5A1.75 1.75 0 0 1 19.25 19H4.75A1.75 1.75 0 0 1 3 17.25V6.75Z"/><path d="m3.5 7 7.29 5.47a2 2 0 0 0 2.42 0L20.5 7"/></svg></div>
+            <div class="bj-actor">Booking</div>
+            <h5>Arrives through GYG or the website</h5>
+          </div>
+          <div class="bj-node warn">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.7-1.2c.5.9.3 1.9-.5 2.6-.8.7-1.7 1.1-1.7 2.4"/><circle cx="12" cy="16.5" r=".1"/></svg></div>
+            <div class="bj-actor">Guide</div>
+            <h5>Asked what they charge</h5>
+          </div>
+          <div class="bj-node warn">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8 6.5h8"/><circle cx="8.5" cy="11" r=".6"/><circle cx="12" cy="11" r=".6"/><circle cx="15.5" cy="11" r=".6"/><circle cx="8.5" cy="15" r=".6"/><circle cx="12" cy="15" r=".6"/><circle cx="15.5" cy="15" r=".6"/></svg></div>
+            <div class="bj-actor">Margin check</div>
+            <h5>Calculated by hand, tour by tour</h5>
+          </div>
+          <div class="bj-node bad">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><circle cx="12" cy="16.5" r=".1"/></svg></div>
+            <div class="bj-actor">Finding</div>
+            <h5>Turns out there's no margin</h5>
+          </div>
+          <div class="bj-node bad">
+            <div class="bj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div>
+            <div class="bj-actor">Outcome</div>
+            <h5>Canceled, or run anyway for the review</h5>
+          </div>
+        </div>
+
+        <div class="bj-mobile">
+          <div class="bj-m-step bad"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11.59 4.41A2 2 0 0 0 10.17 3.83L4 3.7a1 1 0 0 0-1.02 1.02l.13 6.17a2 2 0 0 0 .58 1.42l9 9a2 2 0 0 0 2.83 0l4.9-4.9a2 2 0 0 0 .07-2.9Z"/><circle cx="7.5" cy="8.5" r="1"/></svg></div><div><span class="bj-actor">Pricing</span><h5>Set from experience, not cost</h5></div></div>
+          <div class="bj-m-step"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.75A1.75 1.75 0 0 1 4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v10.5A1.75 1.75 0 0 1 19.25 19H4.75A1.75 1.75 0 0 1 3 17.25V6.75Z"/><path d="m3.5 7 7.29 5.47a2 2 0 0 0 2.42 0L20.5 7"/></svg></div><div><span class="bj-actor">Booking</span><h5>Arrives through GYG or the website</h5></div></div>
+          <div class="bj-m-step warn"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.7-1.2c.5.9.3 1.9-.5 2.6-.8.7-1.7 1.1-1.7 2.4"/><circle cx="12" cy="16.5" r=".1"/></svg></div><div><span class="bj-actor">Guide</span><h5>Asked what they charge</h5></div></div>
+          <div class="bj-m-step warn"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M8 6.5h8"/><circle cx="8.5" cy="11" r=".6"/><circle cx="12" cy="11" r=".6"/><circle cx="15.5" cy="11" r=".6"/><circle cx="8.5" cy="15" r=".6"/><circle cx="12" cy="15" r=".6"/><circle cx="15.5" cy="15" r=".6"/></svg></div><div><span class="bj-actor">Margin check</span><h5>Calculated by hand, tour by tour</h5></div></div>
+          <div class="bj-m-step bad"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><circle cx="12" cy="16.5" r=".1"/></svg></div><div><span class="bj-actor">Finding</span><h5>Turns out there's no margin</h5></div></div>
+          <div class="bj-m-step bad"><div class="bj-m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><div><span class="bj-actor">Outcome</span><h5>Canceled, or run anyway for the review</h5></div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="art-section" id="design-decisions">
+      <div class="eyebrow">Design decisions</div>
+    <h2>Rules that live in the product, not in the training.</h2>
+    <h3>A feasibility spike set the scope</h3>
+    <p>Eight problem statements came out of the interviews; half needed bookings into the console. Pulling them from the booking system required one price per tour on every platform, so pricing and booking assignment came first; bookings moved to MVP2.</p>
+    <div class="dcards">
+      <div class="dcard"><span class="dcard-num">Decision 01</span><h3 class="dcard-title">Only the buy rate is real</h3><p>Tropicfy holds dollars; some guides are paid in colones. The console uses the central bank's buy rate — the lower of its two rates — so a payment never costs more than the dollars cover.</p></div>
+      <div class="dcard"><span class="dcard-num">Decision 02</span><h3 class="dcard-title">Contact lives in the guide's row</h3><p>Reaching a guide meant a Google Sheet and contacts scattered on a phone. WhatsApp, call and copy now sit in the guide's row — three manual steps down to none, name still attached.</p></div>
+      <div class="dcard"><span class="dcard-num">Decision 03</span><h3 class="dcard-title">Two margins, kept in sync</h3><p>GetYourGuide keeps 30%, Bokun (website) keeps 2% — one price can't come from one margin. The console holds two, tied together: edit either one and the other adjusts, and all 30 prices recalculate.</p></div>
+      <div class="dcard"><span class="dcard-num">Decision 04</span><h3 class="dcard-title">The rack only builds the benchmark</h3><p>Guides declare two rates: what they charge clients, and what they charge an agency. We price from the agency rate — the other one only feeds the market benchmark our price is measured against.</p></div>
+    </div>
+    <!-- PARKED: the scroll-synced decisions list with its sticky phone, kept in case it comes back.
+         Its CSS (.dsy) and script are still in the page. To restore, delete this opening comment line and the END PARKED line below.
+    <div class="dsy">
+      <div class="dsy-steps">
+        <div class="dsy-step" data-screen="guides" data-pin="1"><span class="dsy-num">01</span><h3 class="dsy-title">Only the buy rate is real</h3><p>Tropicfy holds dollars; some guides are paid in colones. The console uses the central bank's buy rate — the lower of its two rates — so a payment never costs more than the dollars cover.</p></div>
+        <div class="dsy-step" data-screen="guides" data-pin="2"><span class="dsy-num">02</span><h3 class="dsy-title">Contact lives in the guide's row</h3><p>Reaching a guide meant a Google Sheet and contacts scattered on a phone. WhatsApp, call and copy now sit in the guide's row — three manual steps down to none, name still attached.</p></div>
+        <div class="dsy-step" data-screen="pricing" data-pin="3"><span class="dsy-num">03</span><h3 class="dsy-title">Two margins, kept in sync</h3><p>GetYourGuide keeps 30%, Bokun (website) keeps 2% — one price can't come from one margin. The console holds two, tied together: edit either one and the other adjusts, and all 30 prices recalculate.</p></div>
+        <div class="dsy-step" data-screen="pricing" data-pin="4"><span class="dsy-num">04</span><h3 class="dsy-title">The rack only builds the benchmark</h3><p>Guides declare two rates: what they charge clients, and what they charge an agency. We price from the agency rate — the other one only feeds the market benchmark our price is measured against.</p></div>
+      </div>
+      <div class="dsy-sticky" aria-hidden="true">
+        <div class="dsy-phone"><div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot dsy-shot" data-screen="guides"><img src="/media/ops-guide-tour.png" alt="A tour inside the Guides tab"><div class="confirm-pin" data-pin="1" style="left:52%;top:54%">1</div><div class="confirm-pin" data-pin="2" style="left:13%;top:91%">2</div></div>
+              <div class="sc-shot dsy-shot" data-screen="pricing" hidden><img src="/media/ops-pricing.png" alt="A tour inside the Prices tab"><div class="confirm-pin" data-pin="3" style="left:5%;top:47%">3</div><div class="confirm-pin" data-pin="4" style="left:5%;top:70.5%">4</div></div>
+        </div></div></div>
+      </div>
+    </div>
+    END PARKED -->
+    <!-- PARKED: the tabbed decisions card, replaced by the scroll-synced list.
+         To restore, delete this opening comment line and the END PARKED line below.
+    <div class="dd">
+        <div class="dd-tabs" role="tablist" aria-label="Design decisions">
+          <button type="button" class="dd-tab" role="tab" aria-selected="true" aria-controls="dd1" id="ddt1"><span class="dd-num">01</span><span>Only the buy rate is real</span></button>
+          <button type="button" class="dd-tab" role="tab" aria-selected="false" aria-controls="dd2" id="ddt2" tabindex="-1"><span class="dd-num">02</span><span>Contact lives in the guide's row</span></button>
+          <button type="button" class="dd-tab" role="tab" aria-selected="false" aria-controls="dd3" id="ddt3" tabindex="-1"><span class="dd-num">03</span><span>Two margins, kept in sync</span></button>
+          <button type="button" class="dd-tab" role="tab" aria-selected="false" aria-controls="dd4" id="ddt4" tabindex="-1"><span class="dd-num">04</span><span>The rack only builds the benchmark</span></button>
+        </div>
+        <div class="dd-panels">
+          <div class="dd-panel" role="tabpanel" id="dd1" aria-labelledby="ddt1">
+            <h4>Only the buy rate is real</h4>
+            <p>Tropicfy holds dollars; some guides are paid in colones. The console uses the central bank's buy rate — the lower of its two rates — so a payment never costs more than the dollars cover.</p>
+          </div>
+          <div class="dd-panel" role="tabpanel" id="dd2" aria-labelledby="ddt2" hidden>
+            <h4>Contact lives in the guide's row</h4>
+            <p>Reaching a guide meant a Google Sheet and contacts scattered on a phone. WhatsApp, call and copy now sit in the guide's row — three manual steps down to none, name still attached.</p>
+          </div>
+          <div class="dd-panel" role="tabpanel" id="dd3" aria-labelledby="ddt3" hidden>
+            <h4>Two margins, kept in sync</h4>
+            <p>GetYourGuide keeps 30%, Bokun (website) keeps 2% — one price can't come from one margin. The console holds two, tied together: edit either one and the other adjusts, and all 30 prices recalculate.</p>
+          </div>
+          <div class="dd-panel" role="tabpanel" id="dd4" aria-labelledby="ddt4" hidden>
+            <h4>The rack only builds the benchmark</h4>
+            <p>Guides declare two rates: what they charge clients, and what they charge an agency. We price from the agency rate — the other one only feeds the market benchmark our price is measured against.</p>
+          </div>
+        </div>
+      </div>
+    END PARKED -->
+    </section>
+
+<div class="breakout devices-breakout">
+      <div class="devices-wrap">
+        <div class="devices-row">
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <img src="/media/ops-directory.png" alt="Guides tab — destinations with their tour and guide counts, and the data-health panel">
+            </div></div>
+            <div class="sc-cap"><b>Guides</b> · Directory</div>
+          </div>
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot">
+                <img src="/media/ops-guide-tour.png" alt="A tour inside the Guides tab — the single payment, the exchange rate it was converted with, and each guide with WhatsApp, call and copy in their row">
+                <div class="confirm-pin" style="left:52%;top:54%" tabindex="0" data-tip="Only the buy rate is real" aria-label="Decision 1: Only the buy rate is real">1</div>
+                <div class="confirm-pin" style="left:13%;top:91%" tabindex="0" data-tip="Contact lives in the guide&#39;s row" data-align="start" aria-label="Decision 2: Contact lives in the guide&#39;s row">2</div>
+              </div>
+            </div></div>
+            <div class="sc-cap"><b>Guides</b> · Tour</div>
+          </div>
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot">
+                <img src="/media/ops-pricing.png" alt="A tour inside the Prices tab — the two synced margins, and our price against the market average">
+                <div class="confirm-pin" style="left:5%;top:47%" tabindex="0" data-tip="Two margins, kept in sync" data-align="start" aria-label="Decision 3: Two margins, kept in sync">3</div>
+                <div class="confirm-pin" style="left:5%;top:70.5%" tabindex="0" data-tip="The rack only builds the benchmark" data-align="start" aria-label="Decision 4: The rack only builds the benchmark">4</div>
+              </div>
+            </div></div>
+            <div class="sc-cap"><b>Prices</b> · Tour</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="art-section" id="prototype">
+      <div class="eyebrow">Coded prototype</div>
+      <h2>Built AI-first, straight into production.</h2>
+      <p>The prototype was the production codebase from the first commit, built with Claude as the engineer and me making every call. Hardening ran on that same code.</p>
+      <!-- PARKED: the daily-check paragraph and its three-step cards, kept together in case they come back.
+           To restore, delete this opening comment line and the END PARKED line below.
+      <p>The worst defects broke nothing on screen, so nobody could report them — now a daily check watches whether the numbers are still true.</p>
+      <div class="dc-flow">
+        <div class="dc-step"><div class="t">6:00</div><div class="h">Set today's exchange rate</div><div class="d">Before anyone opens the console.</div></div>
+        <div class="dc-step"><div class="t">When that finishes</div><div class="h">Check the numbers are still true</div><div class="d">15 tours, today's BCCR rate, valid guide rates.</div></div>
+        <div class="dc-step"><div class="t">Only if something is off</div><div class="h">One email with everything</div><div class="d">At this scale, that email is the alert.</div></div>
+      </div>
+      END PARKED -->
+
+    </section>
+
+    <section class="art-section" id="validation">
+      <div class="eyebrow">Validation</div>
+      <h2>Nine findings. Two worth fixing.</h2>
+      <p>Two rounds of moderated usability testing produced nine findings, ranked by severity — Only the critical and the serious were fixed; the rest were logged.</p>
+      <p>Round two closed the critical finding and left the second one honest: the interface now holds the comparison, and what's missing is the habit of using it. That's not a thing another round of testing fixes.</p>
+      <div class="vb">
+        <div class="vb-row">
+          <div class="vb-head"><div class="vb-c">Uses the console&#39;s payment without hesitating between it and a guide&#39;s own rate</div><span class="vb-chip ok">Resolved</span></div>
+          <div class="vb-bar"><span class="vb-l">Round 1</span><div class="vb-track"><div class="vb-fill " style="width:0%"></div></div><span class="vb-v">0 of 2</span></div>
+          <div class="vb-bar"><span class="vb-l">Round 2</span><div class="vb-track"><div class="vb-fill ok" style="width:100%"></div></div><span class="vb-v">2 of 2</span></div>
+        </div>
+        <div class="vb-row">
+          <div class="vb-head"><div class="vb-c">Mentions the market comparison before saving · nobody edits the price directly</div><span class="vb-chip partial">Partial</span></div>
+          <div class="vb-bar"><span class="vb-l">Round 1</span><div class="vb-track"><div class="vb-fill " style="width:0%"></div></div><span class="vb-v">0 of 2</span></div>
+          <div class="vb-bar"><span class="vb-l">Round 2</span><div class="vb-track"><div class="vb-fill partial" style="width:100%"></div></div><span class="vb-v">0 of 2</span></div>
+          <div class="vb-note">2 of 2 with one prompt</div>
+        </div>
+      </div>
+      <!-- PARKED: the Criterion / Round 1 / Round 2 / Verdict table, replaced by the round bars.
+           To restore, delete this opening comment line and the END PARKED line below.
+      <table class="case-table">
+        <thead><tr><th>Criterion</th><th>Round 1</th><th>Round 2</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr>
+            <td data-l="Criterion">Uses the console's payment without hesitating between it and a guide's own rate</td>
+            <td data-l="Round 1">0 of 2</td>
+            <td data-l="Round 2">2 of 2 · unit doubt down from 2 occurrences to 0</td>
+            <td data-l="Verdict"><span class="verdict">Resolved</span></td>
+          </tr>
+          <tr>
+            <td data-l="Criterion">Mentions the market comparison before saving · nobody edits the price directly</td>
+            <td data-l="Round 1">0 of 2, even after four prompts</td>
+            <td data-l="Round 2">0 of 2 spontaneously — but with a single prompt, 2 of 2 found it and used it instantly · price edits down from 1 of 2 to 0</td>
+            <td data-l="Verdict"><span class="verdict partial">Partial</span></td>
+          </tr>
+        </tbody>
+      </table>
+      END PARKED -->
+
+    </section>
+
+    <div class="breakout ba-breakout">
+  <div class="devices-wrap">
+    <div class="ba-row">
+      <div class="ba-pair">
+        <div class="ba-head"><b>The payment didn't read as the payment.</b><span class="ba-verdict">Resolved</span></div>
+        <div class="ba-phones">
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot"><img src="/media/ops-f1-before.png" alt="Before: the tour in the Guides tab showed a suggested payment for the guide, with no unit, above each guide's own rack and net rates" loading="lazy"><div class="confirm-pin" style="left:13%;top:47.5%" aria-hidden="true">F1</div></div>
+            </div></div>
+            <div class="sc-cap"><b>Before</b><span class="ba-note">Both SMEs hesitated between it and a guide&#39;s own rate, and the unit was unclear.</span></div>
+          </div>
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot"><img src="/media/ops-guide-tour.png" alt="A tour inside the Guides tab — the single payment, the exchange rate it was converted with, and each guide with WhatsApp, call and copy in their row" loading="lazy"><div class="confirm-pin" style="left:9.5%;top:39%" aria-hidden="true">F1</div></div>
+            </div></div>
+            <div class="sc-cap"><b>After</b><span class="ba-note">Say what the number is, and pay for it in colour.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-pair">
+        <div class="ba-head"><b>The market comparison wasn't working.</b><span class="ba-verdict partial">Partial</span></div>
+        <div class="ba-phones">
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot"><img src="/media/ops-f2-before.png" alt="Before: the tour in the Prices tab showed our price and the market average in separate cards" loading="lazy"><div class="confirm-pin" style="left:7%;top:87%" aria-hidden="true">F2</div></div>
+            </div></div>
+            <div class="sc-cap"><b>Before</b><span class="ba-note">Neither SME used the market comparison, even prompted.</span></div>
+          </div>
+          <div class="sc-cell">
+            <div class="iphone"><div class="iphone-screen">
+              <div class="iphone-status" aria-hidden="true"><span class="t">9:41</span><span class="island"></span><span class="icons"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></svg><svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a9.2 9.2 0 0 1 13 0"/><path d="M4 6.8a5.6 5.6 0 0 1 8 0"/><circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 27 12"><rect x=".6" y=".6" width="22.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="19.2" height="7.2" rx="1.6" fill="currentColor"/><path d="M25 4.2v3.6c.8-.3 1.3-1 1.3-1.8s-.5-1.5-1.3-1.8Z" fill="currentColor" fill-opacity=".45"/></svg></span></div>
+              <div class="sc-shot"><img src="/media/ops-pricing.png" alt="A tour inside the Prices tab — the two synced margins, and our price against the market average" loading="lazy"><div class="confirm-pin" style="left:2.5%;top:69%" aria-hidden="true">F2</div></div>
+            </div></div>
+            <div class="sc-cap"><b>After</b><span class="ba-note">Put our price and the market average in the same block.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <section class="art-section" id="outcomes">
+      <div class="eyebrow">Outcomes</div>
+      <h2>Thirty tours priced, and nothing left to calculate by hand.</h2>
+      <p>Four success metrics, each with a counter-metric — written during definition and answered before deploying.</p>
+<div class="stat-line">
+        <div class="stat-line-item"><div class="val"><span class="before">3</span><span class="arrow">→</span>0</div><div class="lbl">Manual steps to reach a guide — 2 of 2 reached them from the console</div></div>
+        <div class="stat-line-item"><div class="val"><span class="before">0</span><span class="arrow">→</span>30</div><div class="lbl">Tours with a calculated price, in both modalities</div></div>
+        <div class="stat-line-item"><div class="val"><span class="before">always</span><span class="arrow">→</span>never</div><div class="lbl">Having to calculate or ask what to pay — observed, not self-reported</div></div>
+        <div class="stat-line-item"><div class="val"><span class="before">1</span><span class="arrow">→</span>0</div><div class="lbl">Manual currency conversions per payment</div></div>
+      </div>
+    </section>
+
+    <section class="art-section" id="reflection">
+      <div class="eyebrow">Reflection</div>
+      <h2>AI made it fast. Design thinking made it right.</h2>
+      <p>Working AI-first didn't change the quality of the thinking — it changed the reach. Research, prototype, testing and production belonged to one person, and what came out is a product running, not a file handed off.</p>
+    </section>
+  </div>
+</article>
+
+
+<div class="closing">
+  <div class="k">Next case study</div>
+  <a href="/tdbank/customer-contact-update-app/"><span>Customer contact<br class="closing-break"> update app</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+</div>
+
+<script>
+  // Vertical spine timeline (Approach section). One continuous accent →
+  // accent-2 gradient runs the full spine; every dot and segment gets a
+  // slice of it sized to its real position, so color never resets at a
+  // boundary. A sequenced sheen travels dot1 → seg1 → dot2 → seg2 → dot3 →
+  // seg3 → dot4, each dot's purple glow firing the instant the preceding
+  // segment's sweep arrives — all computed from real layout since row
+  // heights vary with text length.
+  (function () {
+    const CYCLE = 4;
+    const GRAD_FROM = [94, 106, 210];   // --accent  #5E6AD2
+    const GRAD_TO = [124, 58, 237];     // --accent-2 #7C3AED
+    function lerpColor(t) {
+      const c = GRAD_FROM.map((v, i) => Math.round(v + (GRAD_TO[i] - v) * t));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    function layoutVsTimeline() {
+      const list = document.getElementById('vsList');
+      if (!list) return;
+      const dots = Array.from(list.querySelectorAll('.vs-dot'));
+      if (dots.length < 2) return;
+      const listRect = list.getBoundingClientRect();
+      const centers = dots.map(d => {
+        const r = d.getBoundingClientRect();
+        return (r.top + r.height / 2) - listRect.top;
+      });
+      const spineTop = centers[0], spineBottom = centers[centers.length - 1];
+      const fracOf = (y) => (y - spineTop) / (spineBottom - spineTop);
+
+      dots.forEach((dot, i) => { dot.style.background = lerpColor(fracOf(centers[i])); });
+
+      // Reserve the tail of the cycle as a pause before it loops; split
+      // what's left into one slot per dot (its flash + the segment after).
+      const pauseFrac = 0.22;
+      const activeFrac = 1 - pauseFrac;
+      const slot = activeFrac / dots.length;
+      // vseg-sheen's own keyframes finish the travel at the 15% mark of
+      // its CYCLE-long animation — the next dot must flash at that exact
+      // instant, not an independently-computed slot time, or it visibly lags.
+      const sweepTravelFrac = 0.15;
+
+      dots[0].style.animationDelay = '0s';
+
+      for (let i = 0; i < dots.length - 1; i++) {
+        const seg = document.getElementById('vsSeg' + i);
+        seg.style.top = centers[i] + 'px';
+        seg.style.height = (centers[i + 1] - centers[i]) + 'px';
+        seg.style.background = `linear-gradient(180deg, ${lerpColor(fracOf(centers[i]))}, ${lerpColor(fracOf(centers[i + 1]))})`;
+        const segStart = (i + 0.05) * slot * CYCLE;
+        seg.querySelector('.sweep').style.animationDelay = `-${(CYCLE - segStart).toFixed(2)}s`;
+
+        const dotStart = segStart + sweepTravelFrac * CYCLE;
+        dots[i + 1].style.animationDelay = `-${(CYCLE - dotStart).toFixed(2)}s`;
+      }
+    }
+    layoutVsTimeline();
+    window.addEventListener('load', layoutVsTimeline);
+    window.addEventListener('resize', layoutVsTimeline);
+  })();
+
+  // Booking journey (Context breakout) — same master-cycle-sweep
+  // mechanism as the vertical spine above: one JS-computed MASTER_CYCLE
+  // sizes injected @keyframes so a sweep-x per segment and a glow pulse
+  // per icon never drift out of sync, even with six nodes instead of
+  // four. Color runs green → red across the row as the booking moves
+  // toward a canceled tour. Below 760px this is display:none (.bj-mobile
+  // takes over).
+  (function () {
+    const row = document.getElementById('bjRow');
+    if (!row) return;
+    const icons = Array.from(row.querySelectorAll('.bj-icon'));
+    if (icons.length < 2) return;
+
+    const CYCLE_PER_ROW = 5;
+    const LINE_TRAVEL_SEC = 0.15 * CYCLE_PER_ROW;
+    const GLOW_PEAK_SEC = 0.015 * CYCLE_PER_ROW;
+    const GLOW_FINISH_SEC = 0.11 * CYCLE_PER_ROW;
+    const pauseFrac = 0.22;
+    const PAUSE_SEC = 2.4;
+
+    const GREEN = [61, 214, 140];    // --success
+    const YELLOW = [245, 166, 35];   // amber — friction starts here
+    const DANGER = [255, 69, 58];    // --danger
+    const ICON_COLORS = [DANGER, GREEN, YELLOW, YELLOW, DANGER, DANGER];
+    const colorFor = i => ICON_COLORS[Math.min(i, ICON_COLORS.length - 1)];
+    const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+    const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+    const segs = Array.from({ length: icons.length - 1 }, () => {
+      const el = document.createElement('div');
+      el.className = 'bj-h-seg';
+      const sweep = document.createElement('div');
+      sweep.className = 'sweep-x';
+      el.appendChild(sweep);
+      row.appendChild(el);
+      return el;
+    });
+
+    function computeSchedule(dotCount) {
+      const slot = (1 - pauseFrac) * CYCLE_PER_ROW / dotCount;
+      const dotStarts = [0];
+      const segStarts = [];
+      for (let i = 0; i < dotCount - 1; i++) {
+        const segStart = (i + 0.05) * slot;
+        segStarts.push(segStart);
+        dotStarts.push(segStart + LINE_TRAVEL_SEC);
+      }
+      const duration = dotStarts[dotStarts.length - 1] + GLOW_FINISH_SEC;
+      return { dotStarts, segStarts, duration };
+    }
+
+    let keyframeStyle = document.getElementById('bjDynamicKeyframes');
+    if (!keyframeStyle) {
+      keyframeStyle = document.createElement('style');
+      keyframeStyle.id = 'bjDynamicKeyframes';
+      document.head.appendChild(keyframeStyle);
+    }
+
+    function layout() {
+      if (getComputedStyle(row).display === 'none') return;
+      const schedule = computeSchedule(icons.length);
+      const MASTER_CYCLE = schedule.duration + PAUSE_SEC;
+      const pct = sec => (sec / MASTER_CYCLE * 100).toFixed(4);
+
+      keyframeStyle.textContent = `
+        @keyframes bj-line-sweep-master{0%{transform:translateX(-130%)}${pct(LINE_TRAVEL_SEC)}%{transform:translateX(130%)}100%{transform:translateX(130%)}}
+        @keyframes bj-icon-glow-master{0%,100%{box-shadow:0 0 0 0 rgba(61,214,140,0)}${pct(GLOW_PEAK_SEC)}%{box-shadow:0 0 8px 0 var(--glow-strong),0 0 18px 3px var(--glow-soft)}${pct(GLOW_FINISH_SEC)}%{box-shadow:0 0 0 0 rgba(61,214,140,0)}}
+        .bj-h-seg .sweep-x{animation:bj-line-sweep-master ${MASTER_CYCLE.toFixed(3)}s ease-in-out infinite;animation-fill-mode:backwards}
+        .bj-icon{animation:bj-icon-glow-master ${MASTER_CYCLE.toFixed(3)}s ease-in-out infinite;animation-fill-mode:backwards}
+      `;
+
+      const rowRect = row.getBoundingClientRect();
+      const iconRects = icons.map(ic => { const r = ic.getBoundingClientRect(); return { left: r.left - rowRect.left, right: r.right - rowRect.left }; });
+      const iconY = icons[0].getBoundingClientRect().top - rowRect.top + icons[0].offsetHeight / 2;
+
+      icons.forEach((ic, i) => {
+        const start = schedule.dotStarts[i];
+        ic.style.animationDelay = `-${(MASTER_CYCLE - start).toFixed(3)}s`;
+        const c = colorFor(i);
+        ic.style.setProperty('--glow-strong', rgba(c, .9));
+        ic.style.setProperty('--glow-soft', rgba(c, .5));
+      });
+
+      for (let si = 0; si < segs.length; si++) {
+        const seg = segs[si];
+        seg.style.left = iconRects[si].right + 'px';
+        seg.style.top = iconY + 'px';
+        seg.style.width = (iconRects[si + 1].left - iconRects[si].right) + 'px';
+        seg.style.background = `linear-gradient(90deg, ${rgb(colorFor(si))}, ${rgb(colorFor(si + 1))})`;
+        const start = schedule.segStarts[si];
+        seg.querySelector('.sweep-x').style.animationDelay = `-${(MASTER_CYCLE - start).toFixed(3)}s`;
+      }
+    }
+    layout();
+    window.addEventListener('load', layout);
+    window.addEventListener('resize', layout);
+  })();
+
+  // Persona pain-point bars fill once, when each card enters the viewport.
+  (function () {
+    const cards = Array.from(document.querySelectorAll('.persona-card'));
+    if (!cards.length) return;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+    }, { threshold: 0.25 });
+    cards.forEach(c => io.observe(c));
+  })();
+
+  // Design decisions tabs. Arrow keys move between them, as a tablist should:
+  // one tab in the tab order, the rest reachable with the keyboard.
+  (function () {
+    const tabs = Array.from(document.querySelectorAll('.dd-tab'));
+    if (!tabs.length) return;
+    const show = i => {
+      tabs.forEach((t, n) => {
+        const on = n === i;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      t.addEventListener('keydown', e => {
+        const next = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
+          : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if (!next) return;
+        e.preventDefault();
+        const n = (i + next + tabs.length) % tabs.length;
+        show(n);
+        tabs[n].focus();
+      });
+    });
+  })();
+
+  // Promo video plays only while it's on screen, and always starts silent —
+  // browsers block audio until the visitor asks for it, so the button is the
+  // way in and it rings three times the first time the video appears. Once
+  // the sound is on it stays on, loop after loop, until the visitor turns it
+  // off. With reduced motion it never autoplays — a still frame and the
+  // native controls instead.
+  (function () {
+    const v = document.getElementById('promoVideo');
+    const btn = document.getElementById('promoSound');
+    if (!v || !btn) return;
+
+    const sync = () => {
+      const on = !v.muted;
+      btn.setAttribute('aria-pressed', String(on));
+      btn.setAttribute('aria-label', on ? 'Turn the sound off' : 'Turn the sound on');
+      btn.querySelector('.promo-sound-label').textContent = on ? 'Sound on' : 'Sound';
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.poster = '/media/ops-console-promo-still.jpg';
+      v.preload = 'metadata';
+      v.controls = true;
+      btn.hidden = true;
+      return;
+    }
+
+    const stopAttract = () => btn.classList.remove('attract');
+    btn.addEventListener('animationend', stopAttract);
+    btn.addEventListener('pointerenter', stopAttract);
+
+    btn.addEventListener('click', () => {
+      stopAttract();
+      v.muted = !v.muted;
+      sync();
+      if (v.paused) v.play().catch(() => {});
+    });
+
+    // Pause only once the video has fully left the screen (threshold 0);
+    // at 0.25 it paused while a quarter was still visible.
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+    }, { threshold: 0 }).observe(v);
+
+    // The rings are watched on the button itself: the video starts playing
+    // when its top edge appears, and by then the button — down in the corner
+    // — can still be below the fold, so the animation would run unseen.
+    const seen = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      seen.disconnect();
+      btn.classList.add('attract');
+    }, { threshold: 0.99 });
+    seen.observe(btn);
+
+    sync();
+  })();
+
+
+  // Design decisions: the decision in the middle of the viewport drives the
+  // sticky phone — its screen, and only its pin.
+  (function () {
+    const steps = Array.from(document.querySelectorAll('.dsy-step'));
+    if (!steps.length) return;
+    const set = el => {
+      steps.forEach(s => s.classList.toggle('on', s === el));
+      document.querySelectorAll('.dsy-shot').forEach(sh => { sh.hidden = sh.dataset.screen !== el.dataset.screen; });
+      document.querySelectorAll('.dsy-shot .confirm-pin').forEach(p => p.classList.toggle('on', p.dataset.pin === el.dataset.pin));
+    };
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(e.target); }), { rootMargin: '-45% 0px -45% 0px' });
+    steps.forEach(s => io.observe(s));
+    set(steps[0]);
+  })();
+</script>
+
+</body>
+</html>
