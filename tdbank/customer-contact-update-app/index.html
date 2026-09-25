@@ -251,38 +251,10 @@
     .pull-quote{font-size:20px}
   }
 
-  body.locked{overflow:hidden}
-  .pw-gate{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
-  .pw-card{max-width:340px;width:100%;text-align:center}
-  .pw-icon{width:40px;height:40px;margin:0 auto 20px;color:var(--accent-2-text)}
-  .pw-icon svg{width:100%;height:100%}
-  .pw-card h2{font-size:19px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;color:var(--ink)}
-  .pw-card p{font-size:13.5px;color:var(--muted);margin-bottom:20px}
-  .pw-form{display:flex;gap:8px}
-  .pw-form input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;color:var(--ink);font-family:var(--font);font-size:14px}
-  .pw-form input:focus{outline:none;border-color:var(--accent-2)}
-  .pw-form button{background:var(--accent-2);color:#fff;border:none;border-radius:var(--r-sm);padding:11px 18px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;font-family:var(--font)}
-  .pw-form button:hover{opacity:.9}
-  .pw-error{margin-top:12px;font-size:13px;color:var(--danger);opacity:0;transition:opacity 150ms var(--ease)}
-  .pw-error.show{opacity:1}
 </style>
 </head>
-<body class="locked">
+<body>
 
-<div class="pw-gate" id="pwGate">
-  <div class="pw-card">
-    <div class="pw-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-    </div>
-    <h2>This case study is private</h2>
-    <p>Enter the password to continue.</p>
-    <form class="pw-form" id="pwForm" autocomplete="off">
-      <input type="password" id="pwInput" placeholder="Password" autocomplete="off">
-      <button type="submit">Unlock</button>
-    </form>
-    <div class="pw-error" id="pwError">Incorrect password — try again.</div>
-  </div>
-</div>
 
 <nav class="nav">
   <div class="nav-in">
@@ -720,37 +692,5 @@
   })();
 </script>
 
-<script>
-  (function () {
-    const GATE_KEY = 'td-case-study-unlocked';
-    const gate = document.getElementById('pwGate');
-    const form = document.getElementById('pwForm');
-    const input = document.getElementById('pwInput');
-    const error = document.getElementById('pwError');
-
-    function unlock() {
-      document.body.classList.remove('locked');
-      gate.style.display = 'none';
-    }
-
-    if (sessionStorage.getItem(GATE_KEY) === '1') {
-      unlock();
-    } else {
-      input.focus();
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (input.value === 'rodriguez') {
-        sessionStorage.setItem(GATE_KEY, '1');
-        unlock();
-      } else {
-        error.classList.add('show');
-        input.value = '';
-        input.focus();
-      }
-    });
-  })();
-</script>
 </body>
 </html>
