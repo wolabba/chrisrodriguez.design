@@ -52,7 +52,7 @@
   .nav-in{max-width:1280px;margin:0 auto;padding:20px clamp(20px,4vw,56px);display:flex;align-items:center;justify-content:space-between}
   .logo{font-weight:700;font-size:15.5px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
   .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
-  .nav-links a{font-size:13.5px;font-weight:500;text-decoration:none;color:var(--muted);transition:color 200ms var(--ease);cursor:pointer}
+  .nav-links a{font-size:15px;font-weight:500;text-decoration:none;color:var(--muted);transition:color 200ms var(--ease);cursor:pointer}
   .nav-links a:hover{color:var(--ink)}
   .nav-right{display:flex;align-items:center;gap:20px}
   .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer}
@@ -64,7 +64,7 @@
   .mobile-menu.open{max-height:300px;border-top-color:var(--border)}
   .mobile-menu a{padding:16px clamp(20px,4vw,56px);font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)}
   .mobile-menu a:last-child{border-bottom:none}
-  .ghost-link{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms var(--ease)}
+  .ghost-link{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms var(--ease)}
   .ghost-link:hover{color:var(--ink)}
   .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px;padding:10px 20px;border-radius:var(--r-pill);text-decoration:none;cursor:pointer;border:1px solid transparent;transition:all 200ms var(--ease)}
   .btn-grad{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 4px 20px rgba(94,106,210,.35)}
@@ -88,29 +88,37 @@
   section{position:relative}
 
   /* HERO — Bold Typography Poster. Edge-to-edge oversized headline with a
-     role-rotator eyebrow and an underline CTA; sized to stay inside one
+     role-rotator headline and an underline CTA; sized to stay inside one
      viewport so nothing but the fixed nav sits above it. */
   .hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:88px 0 56px;overflow:hidden;position:relative;background:var(--bg)}
-  .hero-eyebrow{font-family:var(--font);font-weight:400;font-size:13.5px;letter-spacing:.02em;color:var(--accent-2-text);margin-bottom:20px;display:flex;align-items:center;gap:10px;position:relative;z-index:2}
-  .hero-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent-2-text);box-shadow:0 0 6px 0 rgba(124,58,237,.9),0 0 14px 2px rgba(124,58,237,.55);flex-shrink:0;animation:blink-dot 1.6s ease-in-out infinite}
-  @keyframes blink-dot{50%{opacity:.3;box-shadow:0 0 3px 0 rgba(124,58,237,.5),0 0 6px 0 rgba(124,58,237,.25)}}
-  .role-rotator{position:relative;display:inline-block;height:1.3em;overflow:hidden;vertical-align:top;min-width:15ch}
-  .role-text{display:block;opacity:1;transform:translateY(0);transition:opacity 320ms var(--ease),transform 320ms var(--ease)}
-  .role-text.is-leaving{opacity:0;transform:translateY(-8px)}
-  .role-text.is-entering{opacity:0;transform:translateY(8px)}
+  /* The headline is the role rotator: one role at a time, swapped by the same
+     fade-and-slide the eyebrow used. .wrap is a flex item here and its auto
+     margins would shrink it to the text, so it is pinned to the column width. */
+  .hero > .wrap{width:100%}
+  .hero-roles{display:block}
+  .role-rotator{display:block;min-width:0}
+  .role-text{display:block;white-space:nowrap;opacity:1;transform:translateY(0);transition:opacity 320ms var(--ease),transform 320ms var(--ease)}
+  .role-text.is-leaving{opacity:0;transform:translateY(-.06em)}
+  .role-text.is-entering{opacity:0;transform:translateY(.06em)}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  h1{font-weight:800;font-size:clamp(44px,7.6vw,116px);line-height:.98;letter-spacing:-.02em;color:var(--ink);margin:0;position:relative;z-index:2}
+  h1{font-weight:800;font-size:clamp(26px,5.4vw,80px);line-height:1.02;letter-spacing:-.02em;color:var(--accent-2-text);margin:0;position:relative;z-index:2}
   h1 em{font-style:normal;color:var(--accent-2-text)}
   .hero-sub-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:44px;padding-top:26px;border-top:1px solid var(--border);flex-wrap:wrap;position:relative;z-index:2}
-  .hero-sub{font-size:16.5px;color:var(--muted);max-width:44ch;margin:0}
+  .hero-sub{font-size:clamp(17px,1.5vw,22px);line-height:1.5;color:var(--ink);max-width:44ch;margin:0}
+  .hero-sub strong{color:var(--ink);font-weight:700}
   .hero-ctas{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
   .underline-cta{position:relative;display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--ink);text-decoration:none;padding-bottom:5px;border-bottom:2px solid var(--accent-2-text);transition:border-color 200ms var(--ease);white-space:nowrap}
   .underline-cta:hover{border-color:var(--accent)}
   .proof-row{display:flex;flex-wrap:wrap;gap:0;margin-top:36px;padding-top:22px;border-top:1px solid var(--border);position:relative;z-index:2}
   .proof-item{padding-right:28px;margin-right:28px;border-right:1px solid var(--border)}
   .proof-item:last-child{border-right:none;padding-right:0;margin-right:0}
-  .proof-item .val{font-size:22px;font-weight:800;letter-spacing:-.02em}
-  .proof-item .lbl{font-size:12.5px;color:var(--muted-2);margin-top:2px}
+  .proof-item .val{font-size:clamp(24px,2vw,30px);font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .proof-item .val .roll{display:inline-flex;align-items:flex-start;line-height:1}
+  .reel,.reel-fixed{display:block;height:1em;line-height:1}
+  .reel{overflow:hidden}
+  .reel-track{display:block;will-change:transform}
+  .reel-digit{display:block;height:1em;line-height:1}
+  .proof-item .lbl{font-size:clamp(13px,1.05vw,15px);color:var(--ink);margin-top:4px}
 
   /* SECTION HEAD */
   /* Large stroked "ghost" numeral beside the heading, plus a small eyebrow
@@ -118,7 +126,6 @@
      from reading as a generic kicker-only pattern. */
   .sec-head{display:flex;align-items:flex-start;gap:22px;margin-bottom:56px}
   .sec-head>div{display:flex;flex-direction:column;align-items:flex-start}
-  .sec-ghost-num{font-weight:800;font-size:clamp(50px,6.8vw,70px);line-height:1;letter-spacing:-.03em;color:rgba(124,58,237,.18);-webkit-text-stroke:1.5px var(--accent-2-text);flex-shrink:0;user-select:none;align-self:start;margin-top:-6.6px}
   .sec-eyebrow{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2-text);margin-bottom:3px;line-height:1}
   .sec-title{font-weight:800;font-size:clamp(26px,3.4vw,42px);letter-spacing:-.025em;line-height:1.15;max-width:30ch;margin:0}
 
@@ -137,7 +144,7 @@
      sheen sweep (the animated part), staggered per-chip via --sheen-delay so
      a row of cards doesn't flash in unison. prefers-reduced-motion already
      kills all ::after animations globally, so this needs no extra guard. */
-  .tag{margin-right:8px;position:relative;overflow:hidden;display:inline-block;font-size:12.5px;font-weight:600;color:var(--accent-2-text);background:rgba(124,58,237,.14);border-radius:6px;padding:5px 10px;margin-bottom:16px;--sheen-delay:0s}
+  .tag{margin-right:8px;position:relative;overflow:hidden;display:inline-block;font-size:14px;font-weight:600;color:var(--accent-2-text);background:rgba(124,58,237,.14);border-radius:6px;padding:5px 10px;margin-bottom:16px;--sheen-delay:0s}
   .tag::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.4) 48%,rgba(255,255,255,.4) 52%,transparent 65%);transform:translateX(-130%);animation:chip-sheen 5.5s ease-in-out infinite;animation-delay:var(--sheen-delay)}
   @keyframes chip-sheen{0%,18%{transform:translateX(-130%)}38%,100%{transform:translateX(130%)}}
   .card h3{font-weight:700;font-size:clamp(23px,2.6vw,30px);letter-spacing:-.02em;margin-bottom:8px}
@@ -146,14 +153,14 @@
   /* 48ch suits the narrower row-cards; the featured card is ~2x wider and
      needs its own measure below, or the paragraph strands in a fraction of
      the available width. */
-  .card p{color:var(--muted);font-size:17px;max-width:48ch;margin-bottom:20px}
+  .card p{color:var(--ink);font-size:16px;max-width:48ch;margin-bottom:20px}
   .stack-row{display:flex;flex-wrap:wrap;gap:8px}
-  .card-body .skill-chip{font-size:12px;padding:5px 11px}
+  .card-body .skill-chip{font-size:14px;padding:5px 11px}
   .card-metric{display:flex;align-items:center;gap:12px;padding-top:20px;margin-top:20px;border-top:1px solid var(--border)}
   .card-metric .metric-val{font-size:14px;font-weight:600;color:var(--ink)}
   .card-metric .metric-val .arrow{color:var(--muted-2);margin:0 3px;font-weight:400}
   .card-metric .delta{margin-left:auto}
-  .card-foot{display:flex;align-items:center;gap:8px;margin-top:28px;font-size:13.5px;font-weight:600;color:var(--accent-2-text)}
+  .card-foot{display:flex;align-items:center;gap:8px;margin-top:20px;font-size:13.5px;font-weight:600;color:var(--ink)}
   .card-foot svg{width:15px;height:15px;transition:transform 200ms var(--ease)}
   .card:hover .card-foot svg{transform:translate(3px,-3px)}
 
@@ -169,7 +176,9 @@
   .card.wip-card{cursor:default}
   .card.wip-card:hover{border-color:var(--border);box-shadow:none;transform:none}
   .row-cards .card-body{padding:24px}
-  .row-cards .tag{margin-bottom:14px}
+  .row-cards .tag{margin-bottom:0}
+  .card-tags{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .card-tags .tag{margin-right:0}
   .row-cards h3{font-size:21px;margin-bottom:8px}
 
   /* ABOUT */
@@ -177,25 +186,25 @@
   .about-grid{display:grid;grid-template-columns:.62fr 1fr;gap:60px;align-items:stretch}
   .about-photo-frame{background:linear-gradient(135deg,var(--bg-elevated-2),var(--bg-elevated));border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
   .about-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
-  .about p{color:var(--muted);font-size:16px;max-width:60ch;margin-bottom:16px}
+  .about p{color:var(--ink);font-size:16px;line-height:1.6;margin-bottom:18px}
   .about p strong{color:var(--ink);font-weight:600}
   .about-chip-group{margin-top:28px}
-  .chip-group-label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-2);margin-bottom:12px}
+  .chip-group-label{display:block;font-size:15px;font-weight:600;letter-spacing:0;color:var(--muted-2);margin-bottom:12px}
   .skills{display:flex;flex-wrap:wrap;gap:9px}
-  .skill-chip{font-size:13.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;color:var(--ink)}
-  .skills .skill-chip{color:var(--accent-2-text);background:rgba(124,58,237,.14);border:none;font-size:12.5px;font-weight:600;border-radius:6px;padding:5px 10px}
+  .skill-chip{font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;color:var(--ink)}
+  .skills .skill-chip{color:var(--accent-2-text);background:rgba(124,58,237,.14);border:none;font-size:14px;font-weight:600;border-radius:6px;padding:5px 10px}
 
   /* FOOTER — short utility bar, no card */
   .footer{padding:32px 0;background:var(--bg-alt);border-top:1px solid var(--border)}
   .foot-bar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .foot-left{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
-  .foot-name{font-weight:700;font-size:14.5px;line-height:1}
-  .foot-avail{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);line-height:1}
+  .foot-name{font-weight:700;font-size:15px;line-height:1}
+  .foot-avail{display:inline-flex;align-items:center;gap:8px;font-size:15px;color:var(--muted);line-height:1}
   .foot-avail .dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--success-bg);flex-shrink:0}
   .foot-links{display:flex;align-items:center;gap:22px}
-  .foot-links a{font-size:13px;text-decoration:none;color:var(--muted);transition:color 200ms;line-height:1}
+  .foot-links a{font-size:15px;text-decoration:none;color:var(--muted);transition:color 200ms;line-height:1}
   .foot-links a:hover{color:var(--ink)}
-  .foot-meta{font-size:12px;color:var(--muted-2);line-height:1}
+  .foot-meta{font-size:15px;color:var(--muted-2);line-height:1}
 
   /* Visible by default — content must never depend on JS to become visible.
      JS opts elements INTO a hidden-then-reveal animation via .js-hidden; if the
@@ -218,8 +227,23 @@
     .hero-sub-row{align-items:flex-start}
     .proof-row{flex-wrap:nowrap}
     .proof-item{padding-right:14px;margin-right:14px;flex-shrink:0}
-    .proof-item .val{font-size:18px}
-    .proof-item .lbl{font-size:10.5px;white-space:nowrap}
+    .proof-item .val{font-size:21px}
+    .proof-item .lbl{font-size:11.5px;white-space:nowrap}
+    .work,.about{padding:64px 0}
+
+    /* Work cards become a swipeable carousel on phones. Order differs from
+       desktop: TD Bank leads, the in-progress card goes last. */
+    .row-cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;
+      margin-inline:calc(-1 * clamp(20px,4vw,56px));
+      padding:2px clamp(20px,4vw,56px) 6px;
+      scroll-padding-inline:clamp(20px,4vw,56px)}
+    .row-cards::-webkit-scrollbar{display:none}
+    .row-cards > *{flex:0 0 86%;min-width:0;scroll-snap-align:start}
+    .row-cards > :nth-child(1){order:2}
+    .row-cards > :nth-child(2){order:1}
+    .row-cards > :nth-child(3){order:4}
+    .row-cards > :nth-child(4){order:3}
   }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -240,7 +264,6 @@
     </ul>
     <div class="nav-right">
       <a class="ghost-link" href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a class="ghost-link" href="mailto:chris@wolabba.com">Contact ↗</a>
     </div>
     <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
@@ -250,7 +273,6 @@
     <a href="#work">Work</a>
     <a href="#about">About</a>
     <a href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
-    <a href="mailto:chris@wolabba.com">Contact ↗</a>
   </div>
 </nav>
 
@@ -258,16 +280,14 @@
   <div class="glow g1" aria-hidden="true"></div>
   <div class="glow g2" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="hero-eyebrow reveal">
-      <span class="role-rotator"><span class="role-text" id="roleText">Product Design</span></span>
-    </div>
-    <span class="sr-only">Product Design, UX/UI Design, AI-Native Product Development, User Research</span>
-    <h1 class="reveal">Not a mockup.<br>A <em>product.</em></h1>
+    <span class="sr-only">Product Designer, UX/UI Designer</span>
+    <h1 class="reveal hero-roles">
+      <span class="role-rotator"><span class="role-text" id="roleText">Product Designer</span></span>
+    </h1>
     <div class="hero-sub-row reveal">
-      <p class="hero-sub">Senior product designer who ships AI-native final products — 7+ years of experience spanning enterprise fintech and independent studio work.</p>
+      <p class="hero-sub">Seven years of experience — from <strong>enterprise fintech at TD Bank</strong> to founder-level ownership at my own studio championing an <strong>AI-first approach</strong>.</p>
       <div class="hero-ctas">
         <a class="underline-cta" href="#work">See the work →</a>
-        <a class="ghost-link" href="mailto:chris@wolabba.com">Get in touch</a>
       </div>
     </div>
     <div class="proof-row reveal">
@@ -282,7 +302,6 @@
 <section class="work" id="work">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="sec-ghost-num" aria-hidden="true">01</span>
       <div>
         <span class="sec-eyebrow">Work</span>
         <h2 class="sec-title">Research, design, and shipped products.</h2>
@@ -293,15 +312,14 @@
       <a class="card" href="/tropicfy/ops-console-app/">
         <div class="card-cover"><img src="/media/card-ops-console-app.png" alt="Ops Console cover — “Run the operation. Protect the margin.” over the guide payment and pricing screens" width="1152" height="648" loading="lazy"></div>
         <div class="card-body">
-          <span class="tag" style="--sheen-delay:-1.8s">Product Design</span><span class="tag" style="--sheen-delay:-1.1s">Full Stack</span><span class="tag" style="--sheen-delay:-0.4s">AI-first</span>
+          <div class="card-tags">
+            <span class="tag" style="--sheen-delay:-1.8s">Product Design</span>
+            <span class="tag" style="--sheen-delay:-1.1s">Full Stack</span>
+            <span class="tag" style="--sheen-delay:-0.4s">AI-first</span>
+          </div>
           <h3>Ops console app</h3>
           <div class="card-meta"><span class="meta-company">Tropicfy</span> · 2026</div>
           <p>Profitable tours went from 0 to 30. The Ops console prices every Tropicfy tour from its real cost and sets a single payment per guide.</p>
-          <div class="stack-row">
-            <span class="skill-chip">Claude</span>
-            <span class="skill-chip">Next.js</span>
-            <span class="skill-chip">Supabase</span>
-          </div>
           <div class="card-foot">Read more
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
           </div>
@@ -310,15 +328,12 @@
       <a class="card" href="/tdbank/customer-contact-update-app/">
         <div class="card-cover"><img src="/media/card-customer-contact-update-app.png" alt="Customer contact update app cover — “One agent. One interface. No phone calls.” over the contact update screen" width="1152" height="648" loading="lazy"></div>
         <div class="card-body">
-          <span class="tag" style="--sheen-delay:0s">UX / UI</span>
+          <div class="card-tags">
+            <span class="tag" style="--sheen-delay:0s">UX / UI</span>
+          </div>
           <h3>Customer contact update app</h3>
           <div class="card-meta"><span class="meta-company">TD Bank</span> · 2025</div>
           <p>TD's first contact-update experience built around the customer instead of the product — live across 1,000+ U.S. branches and the contact-center network.</p>
-          <div class="stack-row">
-            <span class="skill-chip">Figma</span>
-            <span class="skill-chip">Systems Thinking</span>
-            <span class="skill-chip">Regulated Industries</span>
-          </div>
           <div class="card-foot">Read more
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
           </div>
@@ -327,28 +342,24 @@
       <div class="card wip-card">
         <div class="card-cover"><img src="/media/card-guide-registration-app.png" alt="Guide registration micro-app cover" width="1152" height="648" loading="lazy"><div class="wip-overlay"><span>In progress</span></div></div>
         <div class="card-body">
-          <span class="tag" style="--sheen-delay:-1.8s">Product Design</span><span class="tag" style="--sheen-delay:-1.1s">Full Stack</span><span class="tag" style="--sheen-delay:-0.4s">AI-first</span>
+          <div class="card-tags">
+            <span class="tag" style="--sheen-delay:-1.8s">Product Design</span>
+            <span class="tag" style="--sheen-delay:-1.1s">Full Stack</span>
+            <span class="tag" style="--sheen-delay:-0.4s">AI-first</span>
+          </div>
           <h3>Guide registration micro-app</h3>
           <div class="card-meta"><span class="meta-company">Tropicfy</span> · 2026</div>
-          <div class="stack-row">
-            <span class="skill-chip">Claude</span>
-            <span class="skill-chip">Next.js</span>
-            <span class="skill-chip">Supabase</span>
-          </div>
         </div>
       </div>
       <a class="card" href="/xma/tour-booking-platform/">
         <div class="card-cover"><img src="/media/card-tour-booking-platform.png" alt="Tour booking platform cover — “Local experts. Bigger margins.” over the mobile booking site" width="1152" height="648" loading="lazy"></div>
         <div class="card-body">
-          <span class="tag" style="--sheen-delay:-3.6s">User Research</span>
+          <div class="card-tags">
+            <span class="tag" style="--sheen-delay:-3.6s">User Research</span>
+          </div>
           <h3>Tour booking platform</h3>
           <div class="card-meta"><span class="meta-company">XMA</span> · 2024</div>
           <p>Manuel Antonio's first tour-booking platform — giving travelers the local support the major OTAs can't, and cutting fees from 30% to 5%.</p>
-          <div class="stack-row">
-            <span class="skill-chip">Figma</span>
-            <span class="skill-chip">User Interviews</span>
-            <span class="skill-chip">Hotjar</span>
-          </div>
           <div class="card-foot">Read more
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
           </div>
@@ -361,7 +372,6 @@
 <section class="about" id="about">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="sec-ghost-num" aria-hidden="true">02</span>
       <div>
         <span class="sec-eyebrow">About</span>
         <h2 class="sec-title">Design and shipping, same person.</h2>
@@ -375,7 +385,7 @@
         <p><strong>I work at the intersection of design and AI-native development.</strong> That means prototypes that become production code, and design decisions grounded in what's actually buildable.</p>
         <p>7+ years spanning enterprise fintech and independent studio work. Most recently, TD Bank's Odyssey platform team (U.S.); before that — and still ongoing — my own studio, Wolabba (Costa Rica); and earlier, web products at SAVAGE Media Group (Chicago, IL).</p>
         <div class="about-chip-group">
-          <span class="chip-group-label">Capabilities &amp; methodologies</span>
+          <span class="chip-group-label">Capabilities &amp; Methodologies</span>
           <div class="skills">
             <span class="skill-chip">Product Design</span>
             <span class="skill-chip">UX Design</span>
@@ -391,7 +401,7 @@
           </div>
         </div>
         <div class="about-chip-group">
-          <span class="chip-group-label">Tools &amp; technologies</span>
+          <span class="chip-group-label">Tools &amp; Technologies</span>
           <div class="skills">
             <span class="skill-chip">Figma</span>
             <span class="skill-chip">Claude</span>
@@ -421,7 +431,6 @@
       <span class="foot-avail"><span class="dot"></span>Available for new projects</span>
     </div>
     <div class="foot-links">
-      <a href="mailto:chris@wolabba.com">Contact ↗</a>
       <a href="https://www.linkedin.com/in/chrisrodriguezdesign/" target="_blank" rel="noopener">LinkedIn ↗</a>
       <span class="foot-meta">© 2026 Chris Rodriguez</span>
     </div>
@@ -451,12 +460,79 @@
     document.querySelectorAll('.reveal').forEach(el => { el.classList.add('js-hidden'); io.observe(el); });
   }
 
-  // Hero role rotator — cycles the eyebrow label through Chris's disciplines.
+  // Proof numbers roll into place like a slot machine: every digit is a reel
+  // of 0-9 with its own column, spun by a transform and staggered left to
+  // right. The plain figures stay in the markup for screen readers and for
+  // anyone without JS or with reduced motion.
+  (function () {
+    const vals = Array.from(document.querySelectorAll('.proof-item .val'));
+    if (!vals.length || reduced) return;
+
+    const build = el => {
+      const text = el.textContent.trim();
+      if (!/\d/.test(text)) return null;
+      const label = document.createElement('span');
+      label.className = 'sr-only';
+      label.textContent = text;
+      const visual = document.createElement('span');
+      visual.className = 'roll';
+      visual.setAttribute('aria-hidden', 'true');
+      const reels = [];
+      Array.from(text).forEach((ch, i) => {
+        if (!/\d/.test(ch)) {
+          const fixed = document.createElement('span');
+          fixed.className = 'reel-fixed';
+          fixed.textContent = ch;
+          visual.appendChild(fixed);
+          return;
+        }
+        const reel = document.createElement('span');
+        reel.className = 'reel';
+        const track = document.createElement('span');
+        track.className = 'reel-track';
+        for (let d = 0; d <= 9; d++) {
+          const digit = document.createElement('span');
+          digit.className = 'reel-digit';
+          digit.textContent = d;
+          track.appendChild(digit);
+        }
+        // the target digit again at the end, so the reel spins past 9 onto it
+        const last = document.createElement('span');
+        last.className = 'reel-digit';
+        last.textContent = ch;
+        track.appendChild(last);
+        track.style.transform = 'translateY(0)';
+        track.style.transition = 'transform 1.15s cubic-bezier(.16,1,.3,1) ' + (i * 110) + 'ms';
+        reel.appendChild(track);
+        visual.appendChild(reel);
+        reels.push(track);
+      });
+      el.textContent = '';
+      el.append(label, visual);
+      return reels;
+    };
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        const reels = build(e.target);
+        if (!reels) return;
+        void e.target.offsetWidth;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          reels.forEach(t => { t.style.transform = 'translateY(-10em)'; });
+        }));
+      });
+    }, { threshold: 1 });
+    vals.forEach(v => io.observe(v));
+  })();
+
+  // Hero role rotator — cycles the headline through Chris's two roles.
   // A visually-hidden static list (see .sr-only in markup) carries the same
   // info to screen readers without a churning aria-live region.
   const roleEl = document.getElementById('roleText');
   if (roleEl) {
-    const roles = ['Product Design', 'UX/UI Design', 'AI-Native Product Development', 'User Research'];
+    const roles = ['Product Designer', 'UX/UI Designer'];
     let roleIndex = 0;
     setInterval(() => {
       roleIndex = (roleIndex + 1) % roles.length;
