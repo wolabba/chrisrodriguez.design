@@ -1,6 +1,12 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "(www\\.)?chrisrodriguez\\.design" }],
+      "destination": "https://chrisrodriguezdesign.com/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "(www\\.)?chrisrodriguez\\.design" }],
       "destination": "https://chrisrodriguezdesign.com/:path*",
